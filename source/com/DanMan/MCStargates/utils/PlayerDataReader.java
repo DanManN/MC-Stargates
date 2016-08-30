@@ -10,13 +10,17 @@ import java.util.ArrayList;
 
 import org.bukkit.entity.Player;
 
+import com.DanMan.MCStargates.main.MCStargates;
+
 public class PlayerDataReader {
 	Player player;
 	String filepath;
-
-	PlayerDataReader(Player p) {
+	MCStargates plugin;
+	
+	public PlayerDataReader(Player p, MCStargates plugin) {
 		this.player = p;
 		this.filepath = ("plugins/MPStargate/players/" + p.getName() + ".txt");
+		this.plugin = plugin;
 	}
 
 	public boolean createPlayerData() {
@@ -60,7 +64,7 @@ public class PlayerDataReader {
 				}
 			}
 			for (String s : ret) {
-				StargateFileReader sfr = new StargateFileReader();
+				StargateFileReader sfr = new StargateFileReader(plugin);
 				if (sfr.getStargate(s) == null) {
 					ret.remove(s);
 				}

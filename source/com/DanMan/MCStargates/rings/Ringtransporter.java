@@ -18,26 +18,43 @@ import com.DanMan.MCStargates.main.MCStargates;
 import com.DanMan.MCStargates.utils.SignUtils;
 
 public class Ringtransporter {
-	Material RINGTRANSPORTER_MATERIAL = MCStargates.configValues.getRingMaterial();
-	byte RINGTRANSPORTER_MATERIAL_DATA = MCStargates.configValues.getRingMaterial_data();
-	Material RINGTRANSPORTER_GROUND_MATERIAL = MCStargates.configValues.getRingGroundMaterial();
-	byte RINGTRANSPORTER_GROUND_MATERIAL_DATA = MCStargates.configValues.getRingGroundMaterial_data();
+	
+	private Material RINGTRANSPORTER_MATERIAL;
+	private  byte RINGTRANSPORTER_MATERIAL_DATA;
+	private Material RINGTRANSPORTER_GROUND_MATERIAL;
+	private byte RINGTRANSPORTER_GROUND_MATERIAL_DATA;
+	private int RINGDISTANCE;
+	
+	private MCStargates plugin;
 
-	Location loc;
-	int state_counter = -1;
-	int id = 0;
+	private Location loc;
+	private int state_counter = -1;
+	private int id = 0;
+	
+	public Ringtransporter(MCStargates plugin) {
+		this.plugin = plugin;
+		RINGTRANSPORTER_MATERIAL = plugin.getConfigValues().getRingMaterial();
+		RINGTRANSPORTER_MATERIAL_DATA = plugin.getConfigValues().getRingMaterial_data();
+		RINGTRANSPORTER_GROUND_MATERIAL = plugin.getConfigValues().getRingGroundMaterial();
+		RINGTRANSPORTER_GROUND_MATERIAL_DATA = plugin.getConfigValues().getRingGroundMaterial_data();
+		RINGDISTANCE = plugin.getConfigValues().getRingDistance();
+	}
 
 	public Vector getPosition() {
 		Vector start = new Vector(this.loc.getX(), this.loc.getZ(), this.loc.getY());
 		return start;
 	}
 
+	public void setLocation(Location loc) {
+		this.loc = loc;
+	}
+	
 	public Location getLocation() {
 		return this.loc;
 	}
 
 	public Location getLocationNoOffset() {
-		int offset = MCStargates.configValues.getRingDistance();
+		int offset = RINGDISTANCE;
 		Vector n = getNormalVector();
 		Vector v = getPosition().add(n.multiply(offset));
 		Location l = this.loc.clone();
@@ -48,7 +65,7 @@ public class Ringtransporter {
 	}
 
 	public Vector getLocationNoOffsetAsVector() {
-		int offset = MCStargates.configValues.getRingDistance();
+		int offset = RINGDISTANCE;
 		Vector n = getNormalVector();
 		Vector v = getPosition().add(n.multiply(offset));
 		return v;
@@ -56,7 +73,7 @@ public class Ringtransporter {
 
 	public Ringtransporter getPartner() {
 		Location it = getLocation().clone();
-		Ringtransporter ret = new Ringtransporter();
+		Ringtransporter ret = new Ringtransporter(plugin);
 		ret.loc = it.clone();
 		int max = this.loc.getWorld().getMaxHeight();
 
@@ -332,9 +349,9 @@ public class Ringtransporter {
 	}
 
 	public void makeAnimation(final boolean teleport) {
-		if (MCStargates.getInstance() != null) {
+		if (plugin != null) {
 
-			this.id = org.bukkit.Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(MCStargates.getInstance(),
+			this.id = org.bukkit.Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin,
 					new Runnable() {
 						public void run() {
 							Ringtransporter.this.state_counter += 1;

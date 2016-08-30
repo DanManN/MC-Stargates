@@ -11,6 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -21,20 +22,31 @@ import com.DanMan.MCStargates.main.MCStargates;
 import com.DanMan.MCStargates.utils.StargateFileReader;
 
 public class Stargate implements Listener {
-	public static int DHD_DISTANCE = MCStargates.configValues.getDHD_Distance();
-	public static Material GATE_MATERIAL = MCStargates.configValues.getGateMaterial();
-	public static Material DHD_MATERIAL = MCStargates.configValues.getDHDMaterial();
-	public static Material CHEVRON_MATERIAL = MCStargates.configValues.getChevronMaterial();
-	public static Material SHIELD_MATERIAL = MCStargates.configValues.getShieldMaterial();
-
+	public int DHD_DISTANCE;
+	public Material GATE_MATERIAL;
+	public Material DHD_MATERIAL;
+	public Material CHEVRON_MATERIAL;
+	public Material SHIELD_MATERIAL;
+	
+	MCStargates plugin;
+	
 	private String name;
 	private Location loc;
 	private int worldID = 0;
 	private boolean shieldStatus = false;
 	private boolean activationStatus = false;
 	private String target = null;
-	private String direction = null;
+	private BlockFace direction = null;
 
+	public Stargate(MCStargates plugin) {
+		this.plugin = plugin;
+		DHD_DISTANCE = plugin.getConfigValues().getDHD_Distance();
+		GATE_MATERIAL = plugin.getConfigValues().getGateMaterial();
+		DHD_MATERIAL = plugin.getConfigValues().getDHDMaterial();
+		CHEVRON_MATERIAL = plugin.getConfigValues().getChevronMaterial();
+		SHIELD_MATERIAL = plugin.getConfigValues().getShieldMaterial();
+	}
+	
 	public Vector getPosition() {
 		return new Vector(this.loc.getX(), this.loc.getZ(), this.loc.getY());
 	}
@@ -49,13 +61,13 @@ public class Stargate implements Listener {
 		if (checkGateShape()) {
 			activateChevrons();
 			if (!this.shieldStatus) {
-				Kawoosh k = new Kawoosh(this);
+				Kawoosh k = new Kawoosh(this, plugin);
 				k.makeKawoosh();
 				playActivationSound();
 			}
 
 			this.activationStatus = true;
-			StargateFileReader sfr = new StargateFileReader();
+			StargateFileReader sfr = new StargateFileReader(plugin);
 			sfr.updateStargate(this);
 			return true;
 		}
@@ -69,7 +81,7 @@ public class Stargate implements Listener {
 		deactivateChevrons();
 		this.activationStatus = false;
 		this.target = "null";
-		StargateFileReader sfr = new StargateFileReader();
+		StargateFileReader sfr = new StargateFileReader(plugin);
 		sfr.updateStargate(this);
 		return true;
 	}
@@ -77,7 +89,7 @@ public class Stargate implements Listener {
 	public boolean connectToTarget() {
 		if (this.target != null) {
 			if (!this.target.equals(this.name)) {
-				StargateFileReader sfr = new StargateFileReader();
+				StargateFileReader sfr = new StargateFileReader(plugin);
 				Stargate s = sfr.getStargate(this.target);
 				if (s != null) {
 					if ((!this.activationStatus) && (!s.activationStatus)) {
@@ -86,7 +98,7 @@ public class Stargate implements Listener {
 
 								activate();
 								updateSign();
-								StargateThread sT = new StargateThread(this);
+								StargateThread sT = new StargateThread(this, plugin);
 								sT.teleportEntitysThread();
 								sT.countForShutdown();
 
@@ -127,7 +139,7 @@ public class Stargate implements Listener {
 
 	public boolean stopConnection() {
 		if (this.target != null) {
-			StargateFileReader sfr = new StargateFileReader();
+			StargateFileReader sfr = new StargateFileReader(plugin);
 			Stargate s = sfr.getStargate(this.target);
 			if (s != null) {
 				s.deactivate();
@@ -139,7 +151,7 @@ public class Stargate implements Listener {
 	}
 
 	public boolean stopConnectionFromBothSides() {
-		StargateFileReader sfr = new StargateFileReader();
+		StargateFileReader sfr = new StargateFileReader(plugin);
 
 		if (this.target == null) {
 			for (Stargate s : sfr.getStargateList()) {
@@ -185,10 +197,10 @@ public class Stargate implements Listener {
 		Block DHDblock = aloc.getBlock();
 		DHDblock.setType(DHD_MATERIAL);
 		if (unbreakable.booleanValue()) {
-			DHDblock.setMetadata("StargateBlock", new FixedMetadataValue(MCStargates.getInstance(), "true"));
+			DHDblock.setMetadata("StargateBlock", new FixedMetadataValue(plugin, "true"));
 
 		} else if (DHDblock.hasMetadata("StargateBlock")) {
-			DHDblock.removeMetadata("StargateBlock", MCStargates.getInstance());
+			DHDblock.removeMetadata("StargateBlock", plugin);
 		}
 
 		ArrayList<Vector> coordinates = getRingCoordinates();
@@ -198,10 +210,10 @@ public class Stargate implements Listener {
 
 			block.setType(GATE_MATERIAL);
 			if (unbreakable.booleanValue()) {
-				block.setMetadata("StargateBlock", new FixedMetadataValue(MCStargates.getInstance(), "true"));
+				block.setMetadata("StargateBlock", new FixedMetadataValue(plugin, "true"));
 
 			} else if (block.hasMetadata("StargateBlock")) {
-				block.removeMetadata("StargateBlock", MCStargates.getInstance());
+				block.removeMetadata("StargateBlock", plugin);
 			}
 		}
 	}
@@ -271,7 +283,7 @@ public class Stargate implements Listener {
 	public void activateShield() {
 		if (!this.shieldStatus) {
 			this.shieldStatus = true;
-			StargateFileReader sfr = new StargateFileReader();
+			StargateFileReader sfr = new StargateFileReader(plugin);
 			sfr.updateStargate(this);
 			fillGate(SHIELD_MATERIAL);
 		}
@@ -280,7 +292,7 @@ public class Stargate implements Listener {
 	public void deactivateShield() {
 		if (this.shieldStatus) {
 			this.shieldStatus = false;
-			StargateFileReader sfr = new StargateFileReader();
+			StargateFileReader sfr = new StargateFileReader(plugin);
 			sfr.updateStargate(this);
 			if (this.activationStatus) {
 				fillGate(Material.WATER);
@@ -307,23 +319,23 @@ public class Stargate implements Listener {
 			Block block = location.getBlock();
 			block.setType(m);
 			if (m.equals(Material.WATER)) {
-				block.setMetadata("PortalWater", new FixedMetadataValue(MCStargates.getInstance(), "true"));
+				block.setMetadata("PortalWater", new FixedMetadataValue(plugin, "true"));
 
 			} else if (block.hasMetadata("PortalWater")) {
-				block.removeMetadata("PortalWater", MCStargates.getInstance());
+				block.removeMetadata("PortalWater", plugin);
 			}
 
 			if (m.equals(SHIELD_MATERIAL)) {
-				block.setMetadata("StargateBlock", new FixedMetadataValue(MCStargates.getInstance(), "true"));
+				block.setMetadata("StargateBlock", new FixedMetadataValue(plugin, "true"));
 
 			} else if (block.hasMetadata("StargateBlock")) {
-				block.removeMetadata("StargateBlock", MCStargates.getInstance());
+				block.removeMetadata("StargateBlock", plugin);
 			}
 		}
 	}
 
 	public void makeKawoosh(boolean b) {
-		Kawoosh k = new Kawoosh(this);
+		Kawoosh k = new Kawoosh(this, plugin);
 		k.makeKawoosh();
 	}
 
@@ -336,7 +348,7 @@ public class Stargate implements Listener {
 						v.getY());
 				Block block = location.getBlock();
 				block.setType(CHEVRON_MATERIAL);
-				block.setMetadata("StargateBlock", new FixedMetadataValue(MCStargates.getInstance(), "true"));
+				block.setMetadata("StargateBlock", new FixedMetadataValue(plugin, "true"));
 			}
 		}
 	}
@@ -348,7 +360,7 @@ public class Stargate implements Listener {
 					v.getY());
 			Block block = location.getBlock();
 			block.setType(GATE_MATERIAL);
-			block.setMetadata("StargateBlock", new FixedMetadataValue(MCStargates.getInstance(), "true"));
+			block.setMetadata("StargateBlock", new FixedMetadataValue(plugin, "true"));
 		}
 	}
 
@@ -410,8 +422,8 @@ public class Stargate implements Listener {
 	public void playActivationSound() {
 		Collection<? extends Player> players = Bukkit.getServer().getOnlinePlayers();
 
-		float volume = MCStargates.configValues.getKawooshSoundVolume();
-		double radiusSquared = MCStargates.configValues.getKawooshSoundRadius() * MCStargates.configValues.getKawooshSoundRadius();
+		float volume = plugin.getConfigValues().getKawooshSoundVolume();
+		double radiusSquared = plugin.getConfigValues().getKawooshSoundRadius() * plugin.getConfigValues().getKawooshSoundRadius();
 		if (radiusSquared > 0.0D) {
 			Iterator<? extends Player> itr = players.iterator();
 			while (itr.hasNext()) {
@@ -419,7 +431,7 @@ public class Stargate implements Listener {
 				if ((this.loc.getWorld().getUID().equals(p.getLocation().getWorld().getUID()))
 						&& (p.getLocation().distanceSquared(this.loc) <= radiusSquared)) {
 					volume = (float) (volume * (radiusSquared / p.getLocation().distanceSquared(this.loc)));
-					Sound sound = MCStargates.configValues.getKawooshSound();
+					Sound sound = plugin.getConfigValues().getKawooshSound();
 					p.playSound(this.loc, sound, volume, 1.0F);
 				}
 			}
@@ -427,7 +439,7 @@ public class Stargate implements Listener {
 	}
 
 	public GateNetwork getNetwork() {
-		GateNetwork gn = new GateNetwork("", "");
+		GateNetwork gn = new GateNetwork("", "", plugin);
 
 		for (GateNetwork g : gn.getNetworkList()) {
 			if (g.networkstargates.contains(this.name)) {
@@ -438,7 +450,7 @@ public class Stargate implements Listener {
 	}
 
 	public boolean setNetwork(String networkName) {
-		GateNetwork gn = new GateNetwork("", "");
+		GateNetwork gn = new GateNetwork("", "", plugin);
 		gn = gn.getNetwork(networkName);
 		if ((gn != null) && (!gn.networkstargates.contains(this.name))) {
 			gn.addGate(this.name);
@@ -449,46 +461,6 @@ public class Stargate implements Listener {
 		return false;
 	}
 
-	public static int getDHD_DISTANCE() {
-		return DHD_DISTANCE;
-	}
-
-	public static void setDHD_DISTANCE(int dHD_DISTANCE) {
-		DHD_DISTANCE = dHD_DISTANCE;
-	}
-
-	public static Material getGATE_MATERIAL() {
-		return GATE_MATERIAL;
-	}
-
-	public static void setGATE_MATERIAL(Material gATE_MATERIAL) {
-		GATE_MATERIAL = gATE_MATERIAL;
-	}
-
-	public static Material getDHD_MATERIAL() {
-		return DHD_MATERIAL;
-	}
-
-	public static void setDHD_MATERIAL(Material dHD_MATERIAL) {
-		DHD_MATERIAL = dHD_MATERIAL;
-	}
-
-	public static Material getCHEVRON_MATERIAL() {
-		return CHEVRON_MATERIAL;
-	}
-
-	public static void setCHEVRON_MATERIAL(Material cHEVRON_MATERIAL) {
-		CHEVRON_MATERIAL = cHEVRON_MATERIAL;
-	}
-
-	public static Material getSHIELD_MATERIAL() {
-		return SHIELD_MATERIAL;
-	}
-
-	public static void setSHIELD_MATERIAL(Material sHIELD_MATERIAL) {
-		SHIELD_MATERIAL = sHIELD_MATERIAL;
-	}
-
 	public String getName() {
 		return name;
 	}
@@ -497,12 +469,8 @@ public class Stargate implements Listener {
 		this.name = name;
 	}
 
-	public Location getLoc() {
+	public Location getLocation() {
 		return loc;
-	}
-
-	public void setLoc(Location loc) {
-		this.loc = loc;
 	}
 
 	public int getWorldID() {
@@ -513,7 +481,7 @@ public class Stargate implements Listener {
 		this.worldID = worldID;
 	}
 
-	public boolean isShieldStatus() {
+	public boolean getShieldStatus() {
 		return shieldStatus;
 	}
 
@@ -521,7 +489,7 @@ public class Stargate implements Listener {
 		this.shieldStatus = shieldStatus;
 	}
 
-	public boolean isActivationStatus() {
+	public boolean getActivationStatus() {
 		return activationStatus;
 	}
 
@@ -537,11 +505,11 @@ public class Stargate implements Listener {
 		this.target = target;
 	}
 
-	public String getDirection() {
+	public BlockFace getDirection() {
 		return direction;
 	}
 
-	public void setDirection(String direction) {
+	public void setDirection(BlockFace direction) {
 		this.direction = direction;
 	}
 }

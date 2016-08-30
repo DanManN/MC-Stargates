@@ -13,24 +13,26 @@ import org.bukkit.util.Vector;
 import com.DanMan.MCStargates.main.MCStargates;
 
 public class Kawoosh {
-	Stargate stargate;
-	int id = 0;
-	int state_counter = 0;
-
-	Kawoosh(Stargate s) {
+	private Stargate stargate;
+	private int id = 0;
+	private int state_counter = 0;
+	private MCStargates plugin;
+	
+	public Kawoosh(Stargate s, MCStargates plugin) {
 		this.stargate = s;
+		this.plugin = plugin;
 	}
 
 	public void makeKawoosh() {
-		if (MCStargates.getInstance() != null) {
+		if (plugin != null) {
 
-			this.id = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(MCStargates.getInstance(), new Runnable() {
+			this.id = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
 				public void run() {
 					Vector normal = Kawoosh.this.stargate.getNormalVector();
 					Vector h = new Vector(0, 0, 1);
 					Vector side = normal.clone().crossProduct(h);
 					Vector start = Kawoosh.this.stargate.getPosition()
-							.add(normal.clone().multiply(Stargate.DHD_DISTANCE));
+							.add(normal.clone().multiply(stargate.DHD_DISTANCE));
 
 					Kawoosh.this.state_counter += 1;
 
@@ -77,7 +79,7 @@ public class Kawoosh {
 						block.setType(Material.STATIONARY_WATER);
 
 						block.setMetadata("PortalWater",
-								new org.bukkit.metadata.FixedMetadataValue(MCStargates.getInstance(), "true"));
+								new org.bukkit.metadata.FixedMetadataValue(plugin, "true"));
 
 					}
 
@@ -291,10 +293,10 @@ public class Kawoosh {
          block.setType(Material.AIR);
          
          if (block.hasMetadata("PortalWater")) {
-           block.removeMetadata("PortalWater", MCStargates.getInstance());
+           block.removeMetadata("PortalWater", plugin);
          }
          if (block.hasMetadata("Kawoosh")) {
-           block.removeMetadata("Kawoosh", MCStargates.getInstance());
+           block.removeMetadata("Kawoosh", plugin);
          }
        }
      }

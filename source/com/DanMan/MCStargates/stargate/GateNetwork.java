@@ -9,19 +9,22 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import com.DanMan.MCStargates.main.MCStargates;
 import com.DanMan.MCStargates.utils.StargateFileReader;
 
 public class GateNetwork {
-	String name;
-	ArrayList<String> networkadmins = new ArrayList<String>();
-	ArrayList<String> networkmembers = new ArrayList<String>();
-	ArrayList<String> networkstargates = new ArrayList<String>();
-	String state = "public";
+	public String name;
+	public ArrayList<String> networkadmins = new ArrayList<String>();
+	public ArrayList<String> networkmembers = new ArrayList<String>();
+	public ArrayList<String> networkstargates = new ArrayList<String>();
+	public String state = "public";
 	String filepath = "plugins/MPStargate/networkList.txt";
+	private MCStargates plugin;
 
-	GateNetwork(String founder, String name) {
+	public GateNetwork(String founder, String name, MCStargates plugin) {
 		this.networkadmins.add(founder);
 		this.name = name;
+		this.plugin = plugin;
 	}
 
 	public boolean addAdmin(String p) {
@@ -158,7 +161,7 @@ public class GateNetwork {
 		String state = a[4];
 
 		String founder = admins[0];
-		GateNetwork g = new GateNetwork(founder, name);
+		GateNetwork g = new GateNetwork(founder, name, plugin);
 		String[] arrayOfString1;
 		int j = (arrayOfString1 = admins).length;
 		for (int i = 0; i < j; i++) {
@@ -414,7 +417,7 @@ public class GateNetwork {
 
 	public void setName(String string) {
 		this.name = string;
-		StargateFileReader sfr = new StargateFileReader();
+		StargateFileReader sfr = new StargateFileReader(plugin);
 		ArrayList<Stargate> l = sfr.getStargateList();
 
 		for (Stargate s : l) {

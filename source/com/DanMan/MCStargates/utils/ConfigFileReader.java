@@ -223,7 +223,7 @@ public class ConfigFileReader {
 		VALUES = vALUES;
 	}
 
-	ConfigFileReader() {
+	public ConfigFileReader() {
 		if (getConfig()) {
 			if ((this.VALUES.get("activationTime") != null)
 					&& (Integer.parseInt((String) this.VALUES.get("activationTime")) >= 0)) {

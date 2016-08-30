@@ -8,13 +8,13 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 public class LanguageFileReader {
-	public HashMap<String, String> LANGUAGE = new HashMap<String, String>();
+	private HashMap<String, String> LANGUAGE = new HashMap<String, String>();
 
-	String default_lang = "en";
-	String filetype = ".txt";
-	String path = "plugins/MPStargate/language_" + this.default_lang + this.filetype;
+	private String default_lang = "en";
+	private String filetype = ".txt";
+	private String path = "plugins/MPStargate/language_" + this.default_lang + this.filetype;
 
-	LanguageFileReader(String language) {
+	public LanguageFileReader(String language) {
 		if (checkLanguageFile(language)) {
 			this.path = ("plugins/MPStargate/language_" + language + this.filetype);
 		}

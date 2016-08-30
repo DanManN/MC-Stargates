@@ -14,22 +14,24 @@ import com.DanMan.MCStargates.main.MCStargates;
 import com.DanMan.MCStargates.utils.StargateFileReader;
 
 public class StargateThread {
-	Stargate stargate;
-	int threadID = 0;
-	int shoutDownTaskID = 0;
-	int secondsOpen = 0;
+	private Stargate stargate;
+	private MCStargates plugin;
+	private int threadID = 0;
+	private int shoutDownTaskID = 0;
+	private int secondsOpen = 0;
 
-	StargateThread(Stargate s) {
+	public StargateThread(Stargate s, MCStargates plugin) {
 		this.stargate = s;
+		this.plugin = plugin;
 	}
 
 	public ArrayList<Entity> getNearbyEntities(int distance) {
 		ArrayList<Entity> ret = new ArrayList<Entity>();
-		java.util.List<Entity> list = this.stargate.getLoc().getWorld().getEntities();
-		Vector direction = this.stargate.getNormalVector();
-		Vector start = this.stargate.getPosition().add(direction.clone().multiply(Stargate.DHD_DISTANCE));
+		java.util.List<Entity> list = this.stargate.getLocation().getWorld().getEntities();
+		Vector direction = stargate.getNormalVector();
+		Vector start = stargate.getPosition().add(direction.clone().multiply(stargate.DHD_DISTANCE));
 
-		Location startLoc = this.stargate.getLoc().clone();
+		Location startLoc = stargate.getLocation().clone();
 		startLoc.setY(start.getZ());
 		startLoc.setX(start.getX());
 		startLoc.setZ(start.getY());
@@ -46,8 +48,8 @@ public class StargateThread {
 	}
 
 	public boolean checkEntityIsInsideStargate(Entity e) {
-		Vector direction = this.stargate.getNormalVector();
-		Vector start = this.stargate.getPosition().add(direction.clone().multiply(Stargate.DHD_DISTANCE));
+		Vector direction = stargate.getNormalVector();
+		Vector start = stargate.getPosition().add(direction.clone().multiply(stargate.DHD_DISTANCE));
 
 		double x1 = start.getX();
 		double x2 = start.getX();
@@ -104,11 +106,11 @@ public class StargateThread {
 	}
 
 	public void teleportEntitysThread() {
-		if (MCStargates.getInstance() != null) {
-			this.threadID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(MCStargates.getInstance(),
+		if (plugin != null) {
+			threadID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin,
 					new Runnable() {
 						public void run() {
-							if ((!StargateThread.this.stargate.isActivationStatus())
+							if ((!StargateThread.this.stargate.getActivationStatus())
 									|| (StargateThread.this.stargate.getTarget() == null)) {
 								Bukkit.getScheduler().cancelTask(StargateThread.this.threadID);
 							}
@@ -116,32 +118,32 @@ public class StargateThread {
 							for (Entity e : StargateThread.this.getNearbyEntities(10)) {
 								if (StargateThread.this.checkEntityIsInsideStargate(e)) {
 
-									StargateFileReader sfr = new StargateFileReader();
+									StargateFileReader sfr = new StargateFileReader(plugin);
 									Stargate target = sfr.getStargate(StargateThread.this.stargate.getTarget());
 
-									if (target.isShieldStatus()) {
+									if (target.getShieldStatus()) {
 										System.out.println("shield activ");
-										if (MCStargates.configValues.getIrisNoTeleport().equals("true")) {
+										if (plugin.getConfigValues().getIrisNoTeleport().equals("true")) {
 											target = StargateThread.this.stargate;
 										}
 										e.remove();
 									} else {
 										Vector direction = target.getNormalVector();
 										Vector start = target.getPosition()
-												.add(direction.clone().multiply(Stargate.DHD_DISTANCE - 1));
+												.add(direction.clone().multiply(stargate.DHD_DISTANCE - 1));
 
-										Location newLoc = new Location(target.getLoc().getWorld(), start.getX(),
+										Location newLoc = new Location(target.getLocation().getWorld(), start.getX(),
 												start.getZ(), start.getY());
-										if (target.getLoc().getWorld().equals(StargateThread.this.stargate.getLoc().getWorld())) {
+										if (target.getLocation().getWorld().equals(StargateThread.this.stargate.getLocation().getWorld())) {
 											e.teleport(newLoc);
 
 										} else if ((e instanceof Item)) {
 											org.bukkit.inventory.ItemStack newItem = ((Item) e).getItemStack().clone();
 											e.remove();
-											target.getLoc().getWorld().dropItemNaturally(newLoc, newItem);
+											target.getLocation().getWorld().dropItemNaturally(newLoc, newItem);
 										} else {
 											e.remove();
-											target.getLoc().getWorld().spawnEntity(newLoc, e.getType());
+											target.getLocation().getWorld().spawnEntity(newLoc, e.getType());
 										}
 
 									}
@@ -157,14 +159,14 @@ public class StargateThread {
 	}
 
 	public void countForShutdown() {
-		if (MCStargates.getInstance() != null) {
-			this.shoutDownTaskID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(MCStargates.getInstance(),
+		if (plugin != null) {
+			this.shoutDownTaskID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin,
 					new Runnable() {
 						public void run() {
-							if (MCStargates.configValues.getActivationTime() == 0) {
+							if (plugin.getConfigValues().getActivationTime() == 0) {
 								Bukkit.getScheduler().cancelTask(StargateThread.this.shoutDownTaskID);
 							}
-							if (!StargateThread.this.stargate.isActivationStatus()) {
+							if (!StargateThread.this.stargate.getActivationStatus()) {
 								Bukkit.getScheduler().cancelTask(StargateThread.this.shoutDownTaskID);
 							}
 
@@ -172,17 +174,17 @@ public class StargateThread {
 							args3.add(StargateThread.this.stargate.getName());
 							args3.add(StargateThread.this.stargate.getTarget());
 
-							for (Player p : StargateThread.this.stargate.getLoc().getWorld().getPlayers()) {
-								if (p.getLocation().distance(StargateThread.this.stargate.getLoc()) < 30.0D)
-									p.sendMessage(ChatColor.GOLD + MCStargates.language.get("pluginNameChat", "")
+							for (Player p : StargateThread.this.stargate.getLocation().getWorld().getPlayers()) {
+								if (p.getLocation().distance(StargateThread.this.stargate.getLocation()) < 30.0D)
+									p.sendMessage(ChatColor.GOLD + plugin.language.get("pluginNameChat", "")
 											+ ChatColor.GREEN
-											+ MCStargates.language.get("gateConnectionClosedTimeout", args3));
+											+ plugin.language.get("gateConnectionClosedTimeout", args3));
 							}
 							StargateThread.this.stargate.stopConnection();
 							Bukkit.getScheduler().cancelTask(StargateThread.this.shoutDownTaskID);
 						}
 
-					}, MCStargates.configValues.getActivationTime() * 20);
+					}, plugin.getConfigValues().getActivationTime() * 20);
 		} else {
 			System.out.println("kein verweis auf plugin!");
 		}

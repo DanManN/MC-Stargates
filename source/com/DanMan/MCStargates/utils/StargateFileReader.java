@@ -11,11 +11,19 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 
 import org.bukkit.Bukkit;
+import org.bukkit.block.BlockFace;
 
+import com.DanMan.MCStargates.main.MCStargates;
 import com.DanMan.MCStargates.stargate.Stargate;
 
 public class StargateFileReader {
 
+	MCStargates plugin;
+	
+	public StargateFileReader(MCStargates plugin) {
+		this.plugin = plugin;
+	}
+	
 	public Stargate getStargate(String name) {
 		for (Stargate stargate : getStargateList()) {
 			if (stargate.getName().equals(name))
@@ -270,14 +278,14 @@ public class StargateFileReader {
 	}
 
 	public String StargateToString(Stargate s) {
-		String ret = s.getName() + ";" + s.getWorldID() + ";" + s.isShieldStatus() + ";" + s.isActivationStatus() + ";"
-				+ s.getLoc() + ";" + s.getTarget() + ";" + s.getDirection();
+		String ret = s.getName() + ";" + s.getWorldID() + ";" + s.getShieldStatus() + ";" + s.getActivationStatus() + ";"
+				+ s.getLocation() + ";" + s.getTarget() + ";" + s.getDirection();
 		return ret;
 	}
 
 	public Stargate StringToStargate(String string) {
 		String[] str = string.split(";");
-		Stargate s = new Stargate();
+		Stargate s = new Stargate(plugin);
 
 		s.setName(str[0]);
 		s.setWorldID(Integer.parseInt(str[1]));
@@ -287,11 +295,11 @@ public class StargateFileReader {
 		double locX = Float.valueOf(str[4].split(",")[1].split("=")[1]).floatValue();
 		double locY = Float.valueOf(str[4].split(",")[2].split("=")[1]).floatValue();
 		double locZ = Float.valueOf(str[4].split(",")[3].split("=")[1]).floatValue();
-		s.setLoc(new org.bukkit.Location((org.bukkit.World) Bukkit.getWorlds().get(s.getWorldID()), locX, locY, locZ));
+		s.setLocation(new org.bukkit.Location((org.bukkit.World) Bukkit.getWorlds().get(s.getWorldID()), locX, locY, locZ));
 
 		s.setTarget(str[5]);
 
-		s.setDirection(str[6]);
+		s.setDirection(BlockFace.valueOf(str[6]));
 
 		return s;
 	}
@@ -299,7 +307,7 @@ public class StargateFileReader {
 	public ArrayList<Stargate> getActiveStartGates() {
 		ArrayList<Stargate> GateList = new ArrayList<Stargate>();
 		for (Stargate stargate : getStargateList()) {
-			if ((stargate.isActivationStatus()) && (!stargate.getTarget().equals("null"))) {
+			if ((stargate.getActivationStatus()) && (!stargate.getTarget().equals("null"))) {
 				GateList.add(stargate);
 			}
 		}
