@@ -57,13 +57,13 @@ public class MCStargates extends JavaPlugin implements Listener {
 
 	public void onEnable() {
 		String version = getDescription().getVersion();
-		System.out.println("    0000");
-		System.out.println("  0      0");
-		System.out.println("0          0");
-		System.out.println("0 Stargate 0");
-		System.out.println("0   " + version + "   0");
-		System.out.println("  0      0");
-		System.out.println("    0000");
+		System.out.println("    000000");
+		System.out.println("  0        0");
+		System.out.println("0            0");
+		System.out.println("0MC-Stargates0");
+		System.out.println("0    " + version + "    0");
+		System.out.println("  0        0");
+		System.out.println("    000000");
 
 		getServer().getPluginManager().registerEvents(this, this);
 		checkConficFiles();
@@ -1144,9 +1144,9 @@ public class MCStargates extends JavaPlugin implements Listener {
 	}
 
 	public void checkConficFiles() {
-		File stargateList = new File("plugins/MPStargate/stargateList.txt");
-		File mpgatesConfig = new File("plugins/MPStargate/mpgatesConfig.txt");
-		File NetworkList = new File("plugins/MPStargate/networkList.txt");
+		File stargateList = new File("plugins/MC-Stargates/stargateList.txt");
+		File mpgatesConfig = new File("plugins/MC-Stargates/mpgatesConfig.txt");
+		File NetworkList = new File("plugins/MC-Stargates/networkList.txt");
 
 		File parent = stargateList.getParentFile();
 		if ((!parent.exists()) && (!parent.mkdirs())) {
@@ -1163,7 +1163,7 @@ public class MCStargates extends JavaPlugin implements Listener {
 
 		if (!stargateList.exists()) {
 			try {
-				PrintWriter writer = new PrintWriter("plugins/MPStargate/stargateList.txt", "UTF-8");
+				PrintWriter writer = new PrintWriter("plugins/MC-Stargates/stargateList.txt", "UTF-8");
 				writer.println(
 						"# Saves all the Stargates: Name, worldID, shieldStatus, activationStatus, location, target, direction");
 				writer.close();
@@ -1174,7 +1174,7 @@ public class MCStargates extends JavaPlugin implements Listener {
 
 		if (!NetworkList.exists()) {
 			try {
-				PrintWriter writer = new PrintWriter("plugins/MPStargate/networkList.txt", "UTF-8");
+				PrintWriter writer = new PrintWriter("plugins/MC-Stargates/networkList.txt", "UTF-8");
 				writer.println("# Saves all the Networks of a world");
 				writer.close();
 			} catch (Exception e) {
@@ -1184,7 +1184,7 @@ public class MCStargates extends JavaPlugin implements Listener {
 
 		if (!mpgatesConfig.exists()) {
 			try {
-				PrintWriter writer = new PrintWriter("plugins/MPStargate/mpgatesConfig.txt", "UTF-8");
+				PrintWriter writer = new PrintWriter("plugins/MC-Stargates/mpgatesConfig.txt", "UTF-8");
 				writer.println("# Config File - Everything else is coming soon ;-)");
 				writer.println(
 						"# For materialsettings, just use solid blocks and the official names for the materials");
@@ -1199,7 +1199,7 @@ public class MCStargates extends JavaPlugin implements Listener {
 				writer.println("ShieldMaterial: STONE");
 				writer.println(
 						"DHDDistance: 9 #Distance of the !sign! (not the DHD-block) to the gate, the DHD-block is one less.");
-				writer.println("KawooshSound: ENDERDRAGON_GROWL");
+				writer.println("KawooshSound: ENTITY_ENDERDRAGON_GROWL");
 				writer.println("KawooshSoundRadius: 20");
 				writer.println("KawooshSoundVolume: 10");
 				writer.println("IrisDamage: 18 #in hitpoints. One heart equals 2 hitpoints");
@@ -1222,7 +1222,7 @@ public class MCStargates extends JavaPlugin implements Listener {
 	}
 
 	public void checkDefaultLanguageFile() {
-		File stargateLanguageFile = new File("plugins/MPStargate/language_en.txt");
+		File stargateLanguageFile = new File("plugins/MC-Stargates/language_en.txt");
 
 		File parent = stargateLanguageFile.getParentFile();
 		if ((!parent.exists()) && (!parent.mkdirs())) {
@@ -1231,7 +1231,7 @@ public class MCStargates extends JavaPlugin implements Listener {
 
 		if (!stargateLanguageFile.exists()) {
 			try {
-				PrintWriter writer = new PrintWriter("plugins/MPStargate/language_en.txt", "UTF-8");
+				PrintWriter writer = new PrintWriter("plugins/MC-Stargates/language_en.txt", "UTF-8");
 				writer.println("# Language File English");
 				writer.println("# You can change everything behind the \":\". The number of %s should not be changed!");
 				writer.println(

@@ -12,17 +12,17 @@ public class LanguageFileReader {
 
 	private String default_lang = "en";
 	private String filetype = ".txt";
-	private String path = "plugins/MPStargate/language_" + this.default_lang + this.filetype;
+	private String path = "plugins/MC-Stargates/language_" + this.default_lang + this.filetype;
 
 	public LanguageFileReader(String language) {
 		if (checkLanguageFile(language)) {
-			this.path = ("plugins/MPStargate/language_" + language + this.filetype);
+			this.path = ("plugins/MC-Stargates/language_" + language + this.filetype);
 		}
 		getLanguage();
 	}
 
 	public boolean checkLanguageFile(String language) {
-		File languageData = new File("plugins/MPStargate/language_" + language + this.filetype);
+		File languageData = new File("plugins/MC-Stargates/language_" + language + this.filetype);
 		if (!languageData.exists()) {
 			return false;
 		}

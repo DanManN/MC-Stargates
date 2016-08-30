@@ -37,7 +37,7 @@ public class ConfigFileReader {
 
 	public boolean getConfig() {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader("plugins/MPStargate/mpgatesConfig.txt"));
+			BufferedReader br = new BufferedReader(new FileReader("plugins/MC-Stargates/mpgatesConfig.txt"));
 			String sCurrentLine;
 			while ((sCurrentLine = br.readLine()) != null) {
 				if (!sCurrentLine.startsWith("#")) {

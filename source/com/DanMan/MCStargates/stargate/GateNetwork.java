@@ -18,7 +18,7 @@ public class GateNetwork {
 	public ArrayList<String> networkmembers = new ArrayList<String>();
 	public ArrayList<String> networkstargates = new ArrayList<String>();
 	public String state = "public";
-	String filepath = "plugins/MPStargate/networkList.txt";
+	String filepath = "plugins/MC-Stargates/networkList.txt";
 	private MCStargates plugin;
 
 	public GateNetwork(String founder, String name, MCStargates plugin) {

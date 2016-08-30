@@ -39,7 +39,7 @@ public class StargateFileReader {
 
 		PrintWriter pWriter = null;
 		try {
-			pWriter = new PrintWriter(new BufferedWriter(new FileWriter("plugins/MPStargate/stargateList.txt", true)),
+			pWriter = new PrintWriter(new BufferedWriter(new FileWriter("plugins/MC-Stargates/stargateList.txt", true)),
 					true);
 
 			String stargateString = StargateToString(stargate);
@@ -57,8 +57,8 @@ public class StargateFileReader {
 	}
 
 	public boolean updateStargate(Stargate stargate) {
-		File inputFile = new File("plugins/MPStargate/stargateList.txt");
-		File tempFile = new File("plugins/MPStargate/MPStargateTempFile.txt");
+		File inputFile = new File("plugins/MC-Stargates/stargateList.txt");
+		File tempFile = new File("plugins/MC-Stargates/MC-StargatesTempFile.txt");
 
 		try {
 			BufferedReader reader = new BufferedReader(new FileReader(inputFile));
@@ -233,9 +233,9 @@ public class StargateFileReader {
 	// }
 
 	public boolean deleteStargate(Stargate stargate) throws IOException {
-		File inputFile = new File("plugins/MPStargate/stargateList.txt");
+		File inputFile = new File("plugins/MC-Stargates/stargateList.txt");
 
-		File tempFile = new File("plugins/MPStargate/MPStargateTempFile.txt");
+		File tempFile = new File("plugins/MC-Stargates/MC-StargatesTempFile.txt");
 
 		BufferedReader reader = new BufferedReader(new FileReader(inputFile));
 		BufferedWriter writer = new BufferedWriter(new FileWriter(tempFile));
@@ -260,7 +260,7 @@ public class StargateFileReader {
 	public ArrayList<Stargate> getStargateList() {
 		ArrayList<Stargate> GateList = new ArrayList<Stargate>();
 		try {
-			BufferedReader br = new BufferedReader(new FileReader("plugins/MPStargate/stargateList.txt"));
+			BufferedReader br = new BufferedReader(new FileReader("plugins/MC-Stargates/stargateList.txt"));
 			String sCurrentLine;
 			while ((sCurrentLine = br.readLine()) != null) {
 				if (!sCurrentLine.startsWith("#")) {

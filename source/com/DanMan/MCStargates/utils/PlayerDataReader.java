@@ -19,7 +19,7 @@ public class PlayerDataReader {
 	
 	public PlayerDataReader(Player p, MCStargates plugin) {
 		this.player = p;
-		this.filepath = ("plugins/MPStargate/players/" + p.getName() + ".txt");
+		this.filepath = ("plugins/MC-Stargates/players/" + p.getName() + ".txt");
 		this.plugin = plugin;
 	}
 
