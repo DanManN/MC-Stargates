@@ -1,0 +1,87 @@
+name: MPStargate
+main: hauptklassen.Main
+version: 0.73
+
+commands:
+  mpgates:
+    description: Can be used to manipulate everything around the MPStargate-Plugin. Use /mpgates help for help
+    usage: mpgates <command> <arguments>
+    permission-message: You don't have permission to access this command.
+
+    
+    
+permissions:
+  network.*:
+    description: Gives access to all network commands
+    children:
+      network.commands: true
+      network.create: true
+  network.commands:
+    description: Allows you to manipulate networks where you are admin
+    default: true
+  network.create:
+    description: Allows you to set a network when creating a stargate
+    default: true
+  rings.*:
+    description: Gives access to all ringtransporter commands
+    children:
+      rings.activate: true
+      rings.build: true
+      rings.use: true
+  rings.activate:
+    description: Allows you to activate ring-transporters
+    default: true
+  rings.build:
+    description: Allows you to build ring-transporters
+    default: true
+  rings.use:
+    description: Allows you to teleport with the ring-transporters
+    default: true
+  stargate.*:
+    description: Gives access to all Stargate commands
+    children:
+      stargate.close: true
+      stargate.discover: true
+      stargate.register: true
+      stargate.use: true
+      stargate.command.build: true
+      stargate.command.activate: true
+      stargate.command.deactivate: true
+      stargate.command.repair: true
+      stargate.command.remove: true
+      stargate.command.shield: true
+      stargate.command.gatelist: true
+  stargate.close:
+    description: Allows you to close a connection by leftclicking a Stargates sign
+    default: true
+  stargate.discover:
+    description: Allows you to discover new adresses by connecting to unknown gates or rightclicking a unknown gate
+    default: true
+  stargate.register:
+    description: Allows you to register a Stargate by naming a sign
+    default: true
+  stargate.use:
+    description: Allows you to travel through Stargates
+    default: true
+  stargate.command.build:
+    description: Allows you to build a stargateshape
+    default: false
+  stargate.command.activate:
+    description: Allows you to etablish a connection to another Stargate
+    default: true
+  stargate.command.deactivate:
+    description: Allows you to stop a connection between two Stargates
+    default: true
+  stargate.command.repair:
+    description: Allows you to repair a Stargate if it should be damaged
+    default: true
+  stargate.command.remove:
+    description: Allows you to unregister a Stargate from the database
+    default: true
+  stargate.command.shield:
+    description: Allows you to activate the shield of a Stargate
+    default: true
+  stargate.command.gatelist:
+    description: Allows you to see a list of all registered Stargtes
+    default: true
+    
