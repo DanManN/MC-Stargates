@@ -88,19 +88,13 @@ public class Stargate implements Listener {
 
 	public boolean connectToTarget() {
 		if (this.target != null) {
-			System.out.println("1");
 			if (!this.target.equals(this.name)) {
-				System.out.println("2");
 				StargateFileReader sfr = new StargateFileReader(plugin);
 				Stargate s = sfr.getStargate(this.target);
 				if (s != null) {
-					System.out.println("3");
 					if ((!this.activationStatus) && (!s.activationStatus)) {
-						System.out.println("4");
 						if ((checkGateShape()) && (s.checkGateShape())) {
-							System.out.println("5");
 							if (compareNetworkName(s.getNetworkName())) {
-								System.out.println("6");
 
 								activate();
 								updateSign();

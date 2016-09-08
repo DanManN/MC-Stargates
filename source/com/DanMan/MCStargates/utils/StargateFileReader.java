@@ -69,7 +69,7 @@ public class StargateFileReader {
 			String currentLine;
 
 			while ((currentLine = reader.readLine()) != null) {
-				if (currentLine.startsWith("#") || !currentLine.contains(stargate.getName())) {
+				if (currentLine.startsWith("#") || !currentLine.contains(" " + stargate.getName() + ";")) {
 					writer.write(currentLine);
 				} else {
 					writer.write(StargateToString(stargate));
@@ -279,13 +279,13 @@ public class StargateFileReader {
 	}
 
 	public String StargateToString(Stargate s) {
-		String ret = s.getName() + ";" + s.getWorldID() + ";" + s.getShieldStatus() + ";" + s.getActivationStatus() + ";"
+		String ret = " " + s.getName() + ";" + s.getWorldID() + ";" + s.getShieldStatus() + ";" + s.getActivationStatus() + ";"
 				+ s.getLocation() + ";" + s.getTarget() + ";" + s.getDirection();
 		return ret;
 	}
 
 	public Stargate StringToStargate(String string) {
-		String[] str = string.split(";");
+		String[] str = string.substring(1).split(";");
 		Stargate s = new Stargate(plugin);
 
 		s.setName(str[0]);

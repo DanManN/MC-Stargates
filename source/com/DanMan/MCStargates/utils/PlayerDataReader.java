@@ -63,7 +63,7 @@ public class PlayerDataReader {
 					ret.add(a);
 				}
 			}
-			for (String s : ret) {
+			for (String s : (ArrayList<String>) ret.clone()) {
 				StargateFileReader sfr = new StargateFileReader(plugin);
 				if (sfr.getStargate(s) == null) {
 					ret.remove(s);

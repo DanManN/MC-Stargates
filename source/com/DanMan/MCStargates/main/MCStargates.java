@@ -813,6 +813,11 @@ public class MCStargates extends JavaPlugin implements Listener {
 							if (s != null) {
 								if (!s.getActivationStatus()) {
 									s.setTarget(args[1]);
+									if (sfr.getStargate(s.getTarget()) == null) {
+										player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
+													+ ChatColor.RED + language.get("gateNotInDatabase", ""));
+										return true;
+									}
 
 									if ((s.getNetwork() != null) && (sfr.getStargate(s.getTarget()).getNetwork() != null)) {
 										if (!s.getNetwork().name.equals(sfr.getStargate(s.getTarget()).getNetwork().name)) {
@@ -828,8 +833,8 @@ public class MCStargates extends JavaPlugin implements Listener {
 									}
 
 									if (((s.getNetwork() == null) && (sfr.getStargate(s.getTarget()).getNetwork() != null))
-											|| ((s.getNetwork() != null)
-													&& (sfr.getStargate(s.getTarget()).getNetwork() == null))) {
+										|| ((s.getNetwork() != null) && (sfr.getStargate(s.getTarget()).getNetwork() == null))) {
+										
 										player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
 												+ ChatColor.RED + language.get("networkGatesNotInSameNetwork", ""));
 										return true;

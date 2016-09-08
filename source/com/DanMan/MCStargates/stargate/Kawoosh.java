@@ -278,27 +278,27 @@ public class Kawoosh {
 	}
 
 	public void cleanKawoosh() {
-     Vector normal = this.stargate.getNormalVector();
-     ArrayList<Vector> vecs = this.stargate.getInsideCoordinates();
-     Iterator<Vector> localIterator = vecs.iterator();
-     for (int i = 0; localIterator.hasNext() && i < 8; i++ )  {
-       Vector v = (Vector)localIterator.next();
-       Vector k = v.clone().subtract(normal.clone().multiply(i));
-       Location location = new Location((World) Bukkit.getWorlds().get(this.stargate.getWorldID()), k.getX(), k.getZ(), k.getY());
-       Block block = location.getBlock();
+     		Vector normal = this.stargate.getNormalVector();
+    		ArrayList<Vector> vecs = this.stargate.getInsideCoordinates();
+    		for (int i = 1; i < 8; i++)  {
+       			Vector k = normal.clone().multiply(-i);
+			System.out.println(k.toString());
+			for (Vector iv : vecs) {
+				Vector v = iv.clone().add(k);
+				System.out.println(v.toString());
+       				Location location = new Location((World) Bukkit.getWorlds().get(this.stargate.getWorldID()), v.getX(), v.getZ(), v.getY());
+       				Block block = location.getBlock();
        
-       if (!block.hasMetadata("StargateBlock"))
-       {
- 
-         block.setType(Material.AIR);
-         
-         if (block.hasMetadata("PortalWater")) {
-           block.removeMetadata("PortalWater", plugin);
-         }
-         if (block.hasMetadata("Kawoosh")) {
-           block.removeMetadata("Kawoosh", plugin);
-         }
-       }
-     }
-   }
+       				if (!block.hasMetadata("StargateBlock")) {
+         				block.setType(Material.AIR);
+         				if (block.hasMetadata("PortalWater")) {
+           					block.removeMetadata("PortalWater", plugin);
+         				}
+         				if (block.hasMetadata("Kawoosh")) {
+           					block.removeMetadata("Kawoosh", plugin);
+         				}
+       				}
+			}
+     		}
+   	}
 }
