@@ -88,13 +88,19 @@ public class Stargate implements Listener {
 
 	public boolean connectToTarget() {
 		if (this.target != null) {
+			System.out.println("1");
 			if (!this.target.equals(this.name)) {
+				System.out.println("2");
 				StargateFileReader sfr = new StargateFileReader(plugin);
 				Stargate s = sfr.getStargate(this.target);
 				if (s != null) {
+					System.out.println("3");
 					if ((!this.activationStatus) && (!s.activationStatus)) {
+						System.out.println("4");
 						if ((checkGateShape()) && (s.checkGateShape())) {
+							System.out.println("5");
 							if (compareNetworkName(s.getNetworkName())) {
+								System.out.println("6");
 
 								activate();
 								updateSign();
@@ -134,7 +140,7 @@ public class Stargate implements Listener {
 
 	public boolean compareNetworkName(String str2) {
 		String str1 = getNetworkName();
-		return str1 == null ? false : str2 == null ? true : str1.equals(str2);
+		return ((str1 != null) && (str2 != null)) ? str1.equals(str2) : ((str1 == null) && (str2 == null));
 	}
 
 	public boolean stopConnection() {
@@ -169,16 +175,16 @@ public class Stargate implements Listener {
 
 	public Vector getNormalVector() {
 		Vector vector = null;
-		if (this.direction.equals("NORTH")) {
+		if (this.direction == BlockFace.NORTH) {
 			vector = new Vector(0, -1, 0);
 		}
-		if (this.direction.equals("SOUTH")) {
+		if (this.direction == BlockFace.SOUTH) {
 			vector = new Vector(0, 1, 0);
 		}
-		if (this.direction.equals("EAST")) {
+		if (this.direction == BlockFace.EAST) {
 			vector = new Vector(1, 0, 0);
 		}
-		if (this.direction.equals("WEST")) {
+		if (this.direction == BlockFace.WEST) {
 			vector = new Vector(-1, 0, 0);
 		}
 

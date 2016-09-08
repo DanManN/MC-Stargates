@@ -1,6 +1,6 @@
 name: MC-Stargates
 main: com.DanMan.MCStargates.main.MCStargates
-version: 0.9
+version: 0.90
 
 commands:
   mpgates:

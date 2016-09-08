@@ -61,7 +61,7 @@ public class MCStargates extends JavaPlugin implements Listener {
 		System.out.println("  0        0");
 		System.out.println("0            0");
 		System.out.println("0MC-Stargates0");
-		System.out.println("0    " + version + "    0");
+		System.out.println("0    " + version + "     0");
 		System.out.println("  0        0");
 		System.out.println("    000000");
 

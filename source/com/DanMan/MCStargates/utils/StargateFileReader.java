@@ -33,7 +33,8 @@ public class StargateFileReader {
 	}
 
 	public boolean saveStargate(Stargate stargate) {
-		if (getStargate(stargate.getName()) == null) {
+		System.out.println("Saving Gate");
+		if (getStargate(stargate.getName()) != null) {
 			return false;
 		}
 
