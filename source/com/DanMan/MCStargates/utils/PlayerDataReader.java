@@ -37,7 +37,7 @@ public class PlayerDataReader {
 					writer.println("# Saves all the Stargates a player discovered");
 					writer.close();
 				} catch (Exception e) {
-					System.out.println("[WARNING] Couldn't create " + this.player.getName() + ".txt!");
+					System.err.println("[WARNING] Couldn't create " + this.player.getName() + ".txt!");
 				}
 			}
 		}

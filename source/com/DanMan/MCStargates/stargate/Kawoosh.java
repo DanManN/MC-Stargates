@@ -87,7 +87,7 @@ public class Kawoosh {
 
 			}, 0L, 3L);
 		} else {
-			System.out.println("kein verweis auf plugin!");
+			System.out.println("null plugin?");
 		}
 	}
 
@@ -282,10 +282,10 @@ public class Kawoosh {
     		ArrayList<Vector> vecs = this.stargate.getInsideCoordinates();
     		for (int i = 1; i < 8; i++)  {
        			Vector k = normal.clone().multiply(-i);
-			System.out.println(k.toString());
+			//System.out.println(k.toString());
 			for (Vector iv : vecs) {
 				Vector v = iv.clone().add(k);
-				System.out.println(v.toString());
+				//System.out.println(v.toString());
        				Location location = new Location((World) Bukkit.getWorlds().get(this.stargate.getWorldID()), v.getX(), v.getZ(), v.getY());
        				Block block = location.getBlock();
        

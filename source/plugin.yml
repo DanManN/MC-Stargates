@@ -1,9 +1,9 @@
 name: MC-Stargates
 main: com.DanMan.MCStargates.main.MCStargates
-version: 0.90
+version: 0.91
 
 commands:
-  mpgates:
+  mcgates:
     description: Can be used to manipulate everything around the MPStargate-Plugin. Use /mpgates help for help
     usage: mpgates <command> <arguments>
     permission-message: You don't have permission to access this command.
@@ -78,7 +78,7 @@ permissions:
   stargate.command.remove:
     description: Allows you to unregister a Stargate from the database
     default: true
-  stargate.command.shield:
+  stargate.command.iris:
     description: Allows you to activate the shield of a Stargate
     default: true
   stargate.command.gatelist:

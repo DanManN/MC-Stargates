@@ -11,7 +11,7 @@ import org.bukkit.Material;
 import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.block.Block;
-import org.bukkit.block.BlockFace;
+import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Listener;
@@ -36,7 +36,8 @@ public class Stargate implements Listener {
 	private boolean shieldStatus = false;
 	private boolean activationStatus = false;
 	private String target = null;
-	private BlockFace direction = null;
+	private String direction = null;
+	private int task;
 
 	public Stargate(MCStargates plugin) {
 		this.plugin = plugin;
@@ -96,12 +97,12 @@ public class Stargate implements Listener {
 						if ((checkGateShape()) && (s.checkGateShape())) {
 							if (compareNetworkName(s.getNetworkName())) {
 
-								activate();
-								updateSign();
 								StargateThread sT = new StargateThread(this, plugin);
 								sT.teleportEntitysThread();
 								sT.countForShutdown();
-
+								activate();
+								updateSign();
+								
 								s.activate();
 
 								return true;
@@ -142,6 +143,7 @@ public class Stargate implements Listener {
 			StargateFileReader sfr = new StargateFileReader(plugin);
 			Stargate s = sfr.getStargate(this.target);
 			if (s != null) {
+				Bukkit.getScheduler().cancelTask(task);
 				s.deactivate();
 				deactivate();
 				updateSign();
@@ -169,16 +171,16 @@ public class Stargate implements Listener {
 
 	public Vector getNormalVector() {
 		Vector vector = null;
-		if (this.direction == BlockFace.NORTH) {
+		if (this.direction.equals("NORTH")) {
 			vector = new Vector(0, -1, 0);
 		}
-		if (this.direction == BlockFace.SOUTH) {
+		if (this.direction.equals("SOUTH")) {
 			vector = new Vector(0, 1, 0);
 		}
-		if (this.direction == BlockFace.EAST) {
+		if (this.direction.equals("EAST")) {
 			vector = new Vector(1, 0, 0);
 		}
-		if (this.direction == BlockFace.WEST) {
+		if (this.direction.equals("WEST")) {
 			vector = new Vector(-1, 0, 0);
 		}
 
@@ -219,27 +221,33 @@ public class Stargate implements Listener {
 	}
 
 	public void updateSign() {
-		Block b = this.loc.getBlock();
-		b.setType(Material.WALL_SIGN);
-		Sign sign = (Sign) b.getState();
+		BlockState state = this.loc.getBlock().getState();
+		if (state instanceof Sign) {
+			Sign sign = (Sign) state;
 
-		if ((this.target != null) && (!this.target.equals("null"))) {
-			sign.setLine(2, "->" + this.target);
-		} else {
-			sign.setLine(2, "");
-		}
+			if ((this.target != null) && (!(this.target.equals("null")))) {
+				sign.setLine(2, "->" + this.target);
+			} else {
+				sign.setLine(2, "");
+			}
 
-		if (getNetwork() != null) {
-			sign.setLine(3, getNetwork().name);
-		} else {
-			sign.setLine(3, "");
+			if (getNetwork() != null)
+				sign.setLine(3, getNetwork().name);
+			else {
+				sign.setLine(3, "");
+			}
+
+			sign.update();
 		}
-		sign.update();
 	}
 
 	public boolean checkSign() {
 		Block b = this.loc.getBlock();
-		b.setType(Material.WALL_SIGN);
+		//System.out.println(b.toString());
+		if (b.getType() != Material.WALL_SIGN) {
+			return false;
+		}
+
 		Sign sign = (Sign) b.getState();
 
 		if (!sign.getLine(0).equalsIgnoreCase(ChatColor.GOLD + "[Stargate]")) {
@@ -248,7 +256,6 @@ public class Stargate implements Listener {
 		if (!sign.getLine(1).equalsIgnoreCase(this.name)) {
 			return false;
 		}
-
 		return true;
 	}
 
@@ -505,11 +512,19 @@ public class Stargate implements Listener {
 		this.target = target;
 	}
 
-	public BlockFace getDirection() {
+	public String getDirection() {
 		return direction;
 	}
 
-	public void setDirection(BlockFace direction) {
+	public void setDirection(String direction) {
 		this.direction = direction;
+	}
+
+	public int getTask() {
+		return task;
+	}
+
+	public void setTask(int task) {
+		this.task = task;
 	}
 }

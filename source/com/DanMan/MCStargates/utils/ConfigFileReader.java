@@ -14,7 +14,7 @@ public class ConfigFileReader {
 	private Material DHDMaterial = Material.OBSIDIAN;
 	private Material GateMaterial = Material.OBSIDIAN;
 	private Material ChevronMaterial = Material.REDSTONE_BLOCK;
-	private Material ShieldMaterial = Material.STONE;
+	private Material ShieldMaterial = Material.IRON_BLOCK;
 	private int DHD_Distance = 9;
 	private int KawooshSoundRadius = 20;
 	private int KawooshSoundVolume = 10;
@@ -22,11 +22,9 @@ public class ConfigFileReader {
 	private int IrisDestroyInventory = 1;
 	private String IrisNoTeleport = "false";
 	private String Language = "en";
-	private Material RingMaterial = Material.getMaterial(44);
-	private byte RingMaterial_data = 0;
-	private Material RingGroundMaterial = Material.SMOOTH_BRICK.getNewData((byte) 3).getItemType();
-	private byte RingGroundMaterial_data = 3;
-	private int RingDistance = 2;
+	private Material RingMaterial = Material.STONE_SLAB2;
+	private Material RingGroundMaterial = Material.STONE_SLAB2;
+	private int RingDistance = 0;
 	private Sound KawooshSound = Sound.ENTITY_ENDERDRAGON_GROWL;
 
 	private String InterWorldConnectionCosts = "none";
@@ -37,7 +35,7 @@ public class ConfigFileReader {
 
 	public boolean getConfig() {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader("plugins/MC-Stargates/mpgatesConfig.txt"));
+			BufferedReader br = new BufferedReader(new FileReader("plugins/MC-Stargates/mcgatesConfig.txt"));
 			String sCurrentLine;
 			while ((sCurrentLine = br.readLine()) != null) {
 				if (!sCurrentLine.startsWith("#")) {
@@ -159,28 +157,12 @@ public class ConfigFileReader {
 		RingMaterial = ringMaterial;
 	}
 
-	public byte getRingMaterial_data() {
-		return RingMaterial_data;
-	}
-
-	public void setRingMaterial_data(byte ringMaterial_data) {
-		RingMaterial_data = ringMaterial_data;
-	}
-
 	public Material getRingGroundMaterial() {
 		return RingGroundMaterial;
 	}
 
 	public void setRingGroundMaterial(Material ringGroundMaterial) {
 		RingGroundMaterial = ringGroundMaterial;
-	}
-
-	public byte getRingGroundMaterial_data() {
-		return RingGroundMaterial_data;
-	}
-
-	public void setRingGroundMaterial_data(byte ringGroundMaterial_data) {
-		RingGroundMaterial_data = ringGroundMaterial_data;
 	}
 
 	public int getRingDistance() {
@@ -260,9 +242,9 @@ public class ConfigFileReader {
 				System.out.println("[WARNING] Wrong Material for Chevrons in configfile!");
 			}
 
-			if ((Material.getMaterial((String) this.VALUES.get(this.ShieldMaterial)) != null)
-					&& (Material.getMaterial((String) this.VALUES.get(this.ShieldMaterial)).isSolid())) {
-				this.ShieldMaterial = Material.getMaterial((String) this.VALUES.get(this.ShieldMaterial));
+			if ((Material.getMaterial((String) this.VALUES.get("IrisMaterial")) != null)
+					&& (Material.getMaterial((String) this.VALUES.get("IrisMaterial")).isSolid())) {
+				this.ShieldMaterial = Material.getMaterial((String) this.VALUES.get("IrisMaterial"));
 			}
 
 			if ((this.VALUES.get("DHDDistance") != null)
@@ -310,8 +292,7 @@ public class ConfigFileReader {
 				if (((String) this.VALUES.get("RingMaterial")).length() > 0) {
 					String[] s = ((String) this.VALUES.get("RingMaterial")).split(",");
 					if (s.length > 0) {
-						this.RingMaterial = Material.getMaterial(Integer.parseInt(s[0]));
-						this.RingMaterial_data = Byte.parseByte(s[1]);
+						this.RingMaterial = Material.valueOf(s[0]);
 					}
 				}
 			}
@@ -320,14 +301,13 @@ public class ConfigFileReader {
 					&& (((String) this.VALUES.get("RingGroundMaterial")).length() > 0)) {
 				String[] value = ((String) this.VALUES.get("RingGroundMaterial")).split(",");
 				if (value.length > 0) {
-					this.RingGroundMaterial = Material.getMaterial(Integer.parseInt(value[0]));
-					this.RingGroundMaterial_data = Byte.parseByte(value[1]);
+					this.RingGroundMaterial = Material.valueOf(value[0]);
 				}
 			}
 
 			if (this.VALUES.get("RingsDistance") != null) {
 				if ((Integer.parseInt((String) this.VALUES.get("RingDistance")) > -2)
-						|| (Integer.parseInt((String) this.VALUES.get("RingDistance")) <= -5)) {
+						|| (Integer.parseInt((String) this.VALUES.get("RingDistance")) <= 5)) {
 					this.RingDistance = Integer.parseInt((String) this.VALUES.get("RingDistance"));
 				}
 			}

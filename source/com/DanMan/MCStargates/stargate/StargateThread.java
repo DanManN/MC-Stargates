@@ -17,8 +17,8 @@ public class StargateThread {
 	private Stargate stargate;
 	private MCStargates plugin;
 	private int threadID = 0;
-	private int shoutDownTaskID = 0;
-	private int secondsOpen = 0;
+	private int shutDownTaskID = 0;
+	// private int secondsOpen = 0;
 
 	public StargateThread(Stargate s, MCStargates plugin) {
 		this.stargate = s;
@@ -107,86 +107,81 @@ public class StargateThread {
 
 	public void teleportEntitysThread() {
 		if (plugin != null) {
-			threadID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin,
-					new Runnable() {
-						public void run() {
-							if ((!StargateThread.this.stargate.getActivationStatus())
-									|| (StargateThread.this.stargate.getTarget() == null)) {
-								Bukkit.getScheduler().cancelTask(StargateThread.this.threadID);
-							}
+			threadID = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
+				public void run() {
+					if ((!StargateThread.this.stargate.getActivationStatus())
+							|| (StargateThread.this.stargate.getTarget() == null)) {
+						Bukkit.getScheduler().cancelTask(StargateThread.this.threadID);
+					}
 
-							for (Entity e : StargateThread.this.getNearbyEntities(10)) {
-								if (StargateThread.this.checkEntityIsInsideStargate(e)) {
+					for (Entity e : StargateThread.this.getNearbyEntities(10)) {
+						if (StargateThread.this.checkEntityIsInsideStargate(e)) {
 
-									StargateFileReader sfr = new StargateFileReader(plugin);
-									Stargate target = sfr.getStargate(StargateThread.this.stargate.getTarget());
+							StargateFileReader sfr = new StargateFileReader(plugin);
+							Stargate target = sfr.getStargate(StargateThread.this.stargate.getTarget());
 
-									if (target.getShieldStatus()) {
-										System.out.println("shield activ");
-										if (plugin.getConfigValues().getIrisNoTeleport().equals("true")) {
-											target = StargateThread.this.stargate;
-										}
-										e.remove();
-									} else {
-										Vector direction = target.getNormalVector();
-										Vector start = target.getPosition()
-												.add(direction.clone().multiply(stargate.DHD_DISTANCE - 1));
+							if (target.getShieldStatus()) {
+								// System.out.println("shield active");
+								if (plugin.getConfigValues().getIrisNoTeleport().equals("true")) {
+									target = StargateThread.this.stargate;
+								}
+								e.remove();
+							} else {
+								Vector direction = target.getNormalVector();
+								Vector start = target.getPosition()
+										.add(direction.clone().multiply(stargate.DHD_DISTANCE - 1));
 
-										Location newLoc = new Location(target.getLocation().getWorld(), start.getX(),
-												start.getZ(), start.getY());
-										if (target.getLocation().getWorld().equals(StargateThread.this.stargate.getLocation().getWorld())) {
-											e.teleport(newLoc);
+								Location newLoc = new Location(target.getLocation().getWorld(), start.getX(),
+										start.getZ(), start.getY());
+								if (target.getLocation().getWorld()
+										.equals(StargateThread.this.stargate.getLocation().getWorld())) {
+									e.teleport(newLoc);
 
-										} else if ((e instanceof Item)) {
-											org.bukkit.inventory.ItemStack newItem = ((Item) e).getItemStack().clone();
-											e.remove();
-											target.getLocation().getWorld().dropItemNaturally(newLoc, newItem);
-										} else {
-											e.remove();
-											target.getLocation().getWorld().spawnEntity(newLoc, e.getType());
-										}
-
-									}
-
+								} else if ((e instanceof Item)) {
+									org.bukkit.inventory.ItemStack newItem = ((Item) e).getItemStack().clone();
+									e.remove();
+									target.getLocation().getWorld().dropItemNaturally(newLoc, newItem);
+								} else {
+									e.remove();
+									target.getLocation().getWorld().spawnEntity(newLoc, e.getType());
 								}
 
 							}
+
 						}
-					}, 0L, 2L);
+
+					}
+				}
+			}, 0L, 1L);
 		} else {
-			System.out.println("kein verweis auf plugin!");
+			System.out.println("null plugin?");
 		}
 	}
 
 	public void countForShutdown() {
+		if (plugin.getConfigValues().getActivationTime() == 0) {
+			return;
+		}
 		if (plugin != null) {
-			this.shoutDownTaskID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin,
-					new Runnable() {
-						public void run() {
-							if (plugin.getConfigValues().getActivationTime() == 0) {
-								Bukkit.getScheduler().cancelTask(StargateThread.this.shoutDownTaskID);
-							}
-							if (!StargateThread.this.stargate.getActivationStatus()) {
-								Bukkit.getScheduler().cancelTask(StargateThread.this.shoutDownTaskID);
-							}
+			shutDownTaskID = Bukkit.getServer().getScheduler().scheduleSyncDelayedTask(plugin, new Runnable() {
+				public void run() {
+					ArrayList<String> args3 = new ArrayList<String>();
+					args3.add(stargate.getName());
+					args3.add(stargate.getTarget());
 
-							ArrayList<String> args3 = new ArrayList<String>();
-							args3.add(StargateThread.this.stargate.getName());
-							args3.add(StargateThread.this.stargate.getTarget());
+					for (Player p : stargate.getLocation().getWorld().getPlayers()) {
+						if (p.getLocation().distance(stargate.getLocation()) < 30.0D)
+							p.sendMessage(ChatColor.GOLD + plugin.language.get("pluginNameChat", "") + ChatColor.GREEN
+									+ plugin.language.get("gateConnectionClosedTimeout", args3));
+					}
+					stargate.stopConnection();
+					//Bukkit.getScheduler().cancelTask(StargateThread.this.shutDownTaskID);
+				}
 
-							for (Player p : StargateThread.this.stargate.getLocation().getWorld().getPlayers()) {
-								if (p.getLocation().distance(StargateThread.this.stargate.getLocation()) < 30.0D)
-									p.sendMessage(ChatColor.GOLD + plugin.language.get("pluginNameChat", "")
-											+ ChatColor.GREEN
-											+ plugin.language.get("gateConnectionClosedTimeout", args3));
-							}
-							StargateThread.this.stargate.stopConnection();
-							Bukkit.getScheduler().cancelTask(StargateThread.this.shoutDownTaskID);
-						}
-
-					}, plugin.getConfigValues().getActivationTime() * 20);
+			}, plugin.getConfigValues().getActivationTime() * 20);
+			stargate.setTask(shutDownTaskID);
 		} else {
-			System.out.println("kein verweis auf plugin!");
+			System.out.println("null plugin?");
 		}
 	}
 }

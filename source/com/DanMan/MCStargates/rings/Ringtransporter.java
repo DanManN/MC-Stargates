@@ -20,9 +20,7 @@ import com.DanMan.MCStargates.utils.SignUtils;
 public class Ringtransporter {
 	
 	private Material RINGTRANSPORTER_MATERIAL;
-	private  byte RINGTRANSPORTER_MATERIAL_DATA;
 	private Material RINGTRANSPORTER_GROUND_MATERIAL;
-	private byte RINGTRANSPORTER_GROUND_MATERIAL_DATA;
 	private int RINGDISTANCE;
 	
 	private MCStargates plugin;
@@ -34,9 +32,7 @@ public class Ringtransporter {
 	public Ringtransporter(MCStargates plugin) {
 		this.plugin = plugin;
 		RINGTRANSPORTER_MATERIAL = plugin.getConfigValues().getRingMaterial();
-		RINGTRANSPORTER_MATERIAL_DATA = plugin.getConfigValues().getRingMaterial_data();
 		RINGTRANSPORTER_GROUND_MATERIAL = plugin.getConfigValues().getRingGroundMaterial();
-		RINGTRANSPORTER_GROUND_MATERIAL_DATA = plugin.getConfigValues().getRingGroundMaterial_data();
 		RINGDISTANCE = plugin.getConfigValues().getRingDistance();
 	}
 
@@ -231,8 +227,6 @@ public class Ringtransporter {
 			Block block = location.getBlock();
 
 			block.setType(this.RINGTRANSPORTER_MATERIAL);
-
-			block.setData(this.RINGTRANSPORTER_MATERIAL_DATA);
 		}
 	}
 
@@ -251,7 +245,6 @@ public class Ringtransporter {
 			Location location = new Location(this.loc.getWorld(), v.getX(), v.getZ() - 1.0D, v.getY());
 			Block block = location.getBlock();
 			block.setType(this.RINGTRANSPORTER_GROUND_MATERIAL);
-			block.setData(this.RINGTRANSPORTER_GROUND_MATERIAL_DATA);
 		}
 	}
 
@@ -260,12 +253,14 @@ public class Ringtransporter {
 		for (Vector v : coordinates) {
 			Location location = new Location(this.loc.getWorld(), v.getX(), v.getZ() - 1.0D, v.getY());
 			Block block = location.getBlock();
+			//System.out.println("Material: "+block.getType());
 			if (!block.getType().equals(this.RINGTRANSPORTER_GROUND_MATERIAL)) {
 				return false;
 			}
 
 			Location location2 = new Location(this.loc.getWorld(), v.getX(), v.getZ() - 2.0D, v.getY());
 			Block block2 = location2.getBlock();
+			//System.out.println("Material: "+block2.getType());
 			if (!block2.getType().equals(this.RINGTRANSPORTER_MATERIAL)) {
 				return false;
 			}
@@ -287,19 +282,19 @@ public class Ringtransporter {
 
 	public Vector getNormalVector() {
 		Sign s = (Sign) getLocation().getBlock().getState();
-		BlockFace direction = SignUtils.signFacing(s).getOppositeFace();
+		String direction = SignUtils.signFacing(s).getOppositeFace().name();
 
-		Vector vector = null;
-		if (direction == BlockFace.NORTH) {
+		Vector vector = new Vector(0, 0, 0);
+		if (direction.equals("NORTH")) {
 			vector = new Vector(0, -1, 0);
 		}
-		if (direction == BlockFace.SOUTH) {
+		if (direction.equals("SOUTH")) {
 			vector = new Vector(0, 1, 0);
 		}
-		if (direction == BlockFace.EAST) {
+		if (direction.equals("EAST")) {
 			vector = new Vector(1, 0, 0);
 		}
-		if (direction == BlockFace.WEST) {
+		if (direction.equals("WEST")) {
 			vector = new Vector(-1, 0, 0);
 		}
 		vector.multiply(-1);
@@ -412,7 +407,7 @@ public class Ringtransporter {
 
 					}, 0L, 6L);
 		} else {
-			System.out.println("kein verweis auf plugin!");
+			System.err.println("null plugin?");
 		}
 	}
 
@@ -459,12 +454,10 @@ public class Ringtransporter {
 
 			ArrayList<Material> m1 = new ArrayList<Material>();
 			ArrayList<Location> l1 = new ArrayList<Location>();
-			ArrayList<Byte> d1 = new ArrayList<Byte>();
 			ArrayList<ItemStack[]> i1 = new ArrayList<ItemStack[]>();
 
 			ArrayList<Material> m2 = new ArrayList<Material>();
 			ArrayList<Location> l2 = new ArrayList<Location>();
-			ArrayList<Byte> d2 = new ArrayList<Byte>();
 			ArrayList<ItemStack[]> i2 = new ArrayList<ItemStack[]>();
 
 			ArrayList<Location> tabulist = new ArrayList<Location>();
@@ -472,7 +465,6 @@ public class Ringtransporter {
 			for (int i = 0; i < list1.size(); i++) {
 				m1.add(((Block) list1.get(i)).getType());
 				l1.add(((Block) list1.get(i)).getLocation().clone());
-				d1.add(Byte.valueOf(((Block) list1.get(i)).getData()));
 				if (((Block) list1.get(i)).getType().equals(Material.CHEST)) {
 					Chest c = (Chest) ((Block) list1.get(i)).getState();
 					i1.add((ItemStack[]) c.getBlockInventory().getContents().clone());
@@ -484,7 +476,6 @@ public class Ringtransporter {
 			for (int i = 0; i < list2.size(); i++) {
 				m2.add(((Block) list2.get(i)).getType());
 				l2.add(((Block) list2.get(i)).getLocation().clone());
-				d2.add(Byte.valueOf(((Block) list2.get(i)).getData()));
 				if (((Block) list2.get(i)).getType().equals(Material.CHEST)) {
 					Chest c = (Chest) ((Block) list2.get(i)).getState();
 					i2.add((ItemStack[]) c.getBlockInventory().getContents().clone());
@@ -499,14 +490,12 @@ public class Ringtransporter {
 					c.update();
 				}
 				((Block) list1.get(i)).setType(Material.AIR);
-				((Block) list1.get(i)).setData((byte) 0);
 
 				Double blockHeight = Double.valueOf(((Block) list1.get(i)).getY() - Ring1.loc.getY());
 
 				Location newLoc = new Location(this.loc.getWorld(), ((Location) l1.get(i)).getX(),
 						Ring2.loc.getY() + blockHeight.doubleValue(), ((Location) l1.get(i)).getZ());
 				newLoc.getBlock().setType((Material) m1.get(i));
-				newLoc.getBlock().setData(((Byte) d1.get(i)).byteValue());
 
 				if (newLoc.getBlock().getType().equals(Material.CHEST)) {
 					Chest c = (Chest) newLoc.getBlock().getState();
@@ -527,7 +516,6 @@ public class Ringtransporter {
 						c.update();
 					}
 					((Block) list2.get(i)).setType(Material.AIR);
-					((Block) list2.get(i)).setData((byte) 0);
 				}
 
 				Double blockHeight = Double.valueOf(((Block) list2.get(i)).getY() - Ring2.loc.getY());
@@ -535,7 +523,6 @@ public class Ringtransporter {
 				Location newLoc = new Location(this.loc.getWorld(), ((Location) l2.get(i)).getX(),
 						Ring1.loc.getY() + blockHeight.doubleValue(), ((Location) l2.get(i)).getZ());
 				newLoc.getBlock().setType((Material) m2.get(i));
-				newLoc.getBlock().setData(((Byte) d2.get(i)).byteValue());
 
 				if (newLoc.getBlock().getType().equals(Material.CHEST)) {
 					Chest c = (Chest) newLoc.getBlock().getState();
