@@ -4,8 +4,8 @@ version: 0.91
 
 commands:
   mcgates:
-    description: Can be used to manipulate everything around the MPStargate-Plugin. Use /mpgates help for help
-    usage: mpgates <command> <arguments>
+    description: Can be used to manipulate everything around the MC-Stargates plugin. Use /mcgates help for help
+    usage: mcgates <command> <arguments>
     permission-message: You don't have permission to access this command.
 
     
