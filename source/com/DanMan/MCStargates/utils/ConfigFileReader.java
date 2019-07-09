@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.bukkit.Material;
 import org.bukkit.Sound;
 
@@ -35,7 +34,8 @@ public class ConfigFileReader {
 
 	public boolean getConfig() {
 		try {
-			BufferedReader br = new BufferedReader(new FileReader("plugins/MC-Stargates/mcgatesConfig.txt"));
+			BufferedReader br = new BufferedReader(
+				new FileReader("plugins/MC-Stargates/mcgatesConfig.txt"));
 			String sCurrentLine;
 			while ((sCurrentLine = br.readLine()) != null) {
 				if (!sCurrentLine.startsWith("#")) {
@@ -53,137 +53,87 @@ public class ConfigFileReader {
 		}
 	}
 
-	public int getActivationTime() {
-		return activationTime;
-	}
+	public int getActivationTime() { return activationTime; }
 
 	public void setActivationTime(int activationTime) {
 		this.activationTime = activationTime;
 	}
 
-	public Material getDHDMaterial() {
-		return DHDMaterial;
-	}
+	public Material getDHDMaterial() { return DHDMaterial; }
 
-	public void setDHDMaterial(Material dHDMaterial) {
-		DHDMaterial = dHDMaterial;
-	}
+	public void setDHDMaterial(Material dHDMaterial) { DHDMaterial = dHDMaterial; }
 
-	public Material getGateMaterial() {
-		return GateMaterial;
-	}
+	public Material getGateMaterial() { return GateMaterial; }
 
-	public void setGateMaterial(Material gateMaterial) {
-		GateMaterial = gateMaterial;
-	}
+	public void setGateMaterial(Material gateMaterial) { GateMaterial = gateMaterial; }
 
-	public Material getChevronMaterial() {
-		return ChevronMaterial;
-	}
+	public Material getChevronMaterial() { return ChevronMaterial; }
 
 	public void setChevronMaterial(Material chevronMaterial) {
 		ChevronMaterial = chevronMaterial;
 	}
 
-	public Material getShieldMaterial() {
-		return ShieldMaterial;
-	}
+	public Material getShieldMaterial() { return ShieldMaterial; }
 
 	public void setShieldMaterial(Material shieldMaterial) {
 		ShieldMaterial = shieldMaterial;
 	}
 
-	public int getDHD_Distance() {
-		return DHD_Distance;
-	}
+	public int getDHD_Distance() { return DHD_Distance; }
 
-	public void setDHD_Distance(int dHD_Distance) {
-		DHD_Distance = dHD_Distance;
-	}
+	public void setDHD_Distance(int dHD_Distance) { DHD_Distance = dHD_Distance; }
 
-	public int getKawooshSoundRadius() {
-		return KawooshSoundRadius;
-	}
+	public int getKawooshSoundRadius() { return KawooshSoundRadius; }
 
 	public void setKawooshSoundRadius(int kawooshSoundRadius) {
 		KawooshSoundRadius = kawooshSoundRadius;
 	}
 
-	public int getKawooshSoundVolume() {
-		return KawooshSoundVolume;
-	}
+	public int getKawooshSoundVolume() { return KawooshSoundVolume; }
 
 	public void setKawooshSoundVolume(int kawooshSoundVolume) {
 		KawooshSoundVolume = kawooshSoundVolume;
 	}
 
-	public int getIrisDamage() {
-		return IrisDamage;
-	}
+	public int getIrisDamage() { return IrisDamage; }
 
-	public void setIrisDamage(int irisDamage) {
-		IrisDamage = irisDamage;
-	}
+	public void setIrisDamage(int irisDamage) { IrisDamage = irisDamage; }
 
-	public int getIrisDestroyInventory() {
-		return IrisDestroyInventory;
-	}
+	public int getIrisDestroyInventory() { return IrisDestroyInventory; }
 
 	public void setIrisDestroyInventory(int irisDestroyInventory) {
 		IrisDestroyInventory = irisDestroyInventory;
 	}
 
-	public String getIrisNoTeleport() {
-		return IrisNoTeleport;
-	}
+	public String getIrisNoTeleport() { return IrisNoTeleport; }
 
 	public void setIrisNoTeleport(String irisNoTeleport) {
 		IrisNoTeleport = irisNoTeleport;
 	}
 
-	public String getLanguage() {
-		return Language;
-	}
+	public String getLanguage() { return Language; }
 
-	public void setLanguage(String language) {
-		Language = language;
-	}
+	public void setLanguage(String language) { Language = language; }
 
-	public Material getRingMaterial() {
-		return RingMaterial;
-	}
+	public Material getRingMaterial() { return RingMaterial; }
 
-	public void setRingMaterial(Material ringMaterial) {
-		RingMaterial = ringMaterial;
-	}
+	public void setRingMaterial(Material ringMaterial) { RingMaterial = ringMaterial; }
 
-	public Material getRingGroundMaterial() {
-		return RingGroundMaterial;
-	}
+	public Material getRingGroundMaterial() { return RingGroundMaterial; }
 
 	public void setRingGroundMaterial(Material ringGroundMaterial) {
 		RingGroundMaterial = ringGroundMaterial;
 	}
 
-	public int getRingDistance() {
-		return RingDistance;
-	}
+	public int getRingDistance() { return RingDistance; }
 
-	public void setRingDistance(int ringDistance) {
-		RingDistance = ringDistance;
-	}
+	public void setRingDistance(int ringDistance) { RingDistance = ringDistance; }
 
-	public Sound getKawooshSound() {
-		return KawooshSound;
-	}
+	public Sound getKawooshSound() { return KawooshSound; }
 
-	public void setKawooshSound(Sound kawooshSound) {
-		KawooshSound = kawooshSound;
-	}
+	public void setKawooshSound(Sound kawooshSound) { KawooshSound = kawooshSound; }
 
-	public String getInterWorldConnectionCosts() {
-		return InterWorldConnectionCosts;
-	}
+	public String getInterWorldConnectionCosts() { return InterWorldConnectionCosts; }
 
 	public void setInterWorldConnectionCosts(String interWorldConnectionCosts) {
 		InterWorldConnectionCosts = interWorldConnectionCosts;
@@ -193,140 +143,170 @@ public class ConfigFileReader {
 		return networkTeleportUnallowedPlayers;
 	}
 
-	public void setNetworkTeleportUnallowedPlayers(int networkTeleportUnallowedPlayers) {
+	public void
+	setNetworkTeleportUnallowedPlayers(int networkTeleportUnallowedPlayers) {
 		this.networkTeleportUnallowedPlayers = networkTeleportUnallowedPlayers;
 	}
 
-	public Map<String, String> getVALUES() {
-		return VALUES;
-	}
+	public Map<String, String> getVALUES() { return VALUES; }
 
-	public void setVALUES(Map<String, String> vALUES) {
-		VALUES = vALUES;
-	}
+	public void setVALUES(Map<String, String> vALUES) { VALUES = vALUES; }
 
 	public ConfigFileReader() {
 		if (getConfig()) {
-			if ((this.VALUES.get("activationTime") != null)
-					&& (Integer.parseInt((String) this.VALUES.get("activationTime")) >= 0)) {
-				this.activationTime = Integer.parseInt((String) this.VALUES.get("activationTime"));
+			if ((this.VALUES.get("activationTime") != null) &&
+				(Integer.parseInt((String)this.VALUES.get("activationTime")) >= 0)) {
+				this.activationTime =
+					Integer.parseInt((String)this.VALUES.get("activationTime"));
 			}
 
-			if (Material.getMaterial((String) this.VALUES.get("DHDMaterial")) != null) {
-				if (Material.getMaterial((String) this.VALUES.get("DHDMaterial")).isSolid()) {
-					if (!Material.getMaterial((String) this.VALUES.get("DHDMaterial")).hasGravity()) {
-						this.DHDMaterial = Material.getMaterial((String) this.VALUES.get("DHDMaterial"));
+			if (Material.getMaterial((String)this.VALUES.get("DHDMaterial")) != null) {
+				if (Material.getMaterial((String)this.VALUES.get("DHDMaterial"))
+						.isSolid()) {
+					if (!Material.getMaterial((String)this.VALUES.get("DHDMaterial"))
+							 .hasGravity()) {
+						this.DHDMaterial = Material.getMaterial(
+							(String)this.VALUES.get("DHDMaterial"));
 					}
 				}
 			} else {
 				System.out.println("[WARNING] Wrong Material for DHD in configfile!");
 			}
 
-			if (Material.getMaterial((String) this.VALUES.get("GateMaterial")) != null) {
-				if (Material.getMaterial((String) this.VALUES.get("GateMaterial")).isSolid()) {
-					if (!Material.getMaterial((String) this.VALUES.get("GateMaterial")).hasGravity()) {
-						this.GateMaterial = Material.getMaterial((String) this.VALUES.get("GateMaterial"));
+			if (Material.getMaterial((String)this.VALUES.get("GateMaterial")) != null) {
+				if (Material.getMaterial((String)this.VALUES.get("GateMaterial"))
+						.isSolid()) {
+					if (!Material.getMaterial((String)this.VALUES.get("GateMaterial"))
+							 .hasGravity()) {
+						this.GateMaterial = Material.getMaterial(
+							(String)this.VALUES.get("GateMaterial"));
 					}
 				}
 			} else {
-				System.out.println("[WARNING] Wrong Material for Stargate in configfile!");
+				System.out.println(
+					"[WARNING] Wrong Material for Stargate in configfile!");
 			}
 
-			if (Material.getMaterial((String) this.VALUES.get("ChevronMaterial")) != null) {
-				if (Material.getMaterial((String) this.VALUES.get("ChevronMaterial")).isSolid()) {
-					if (!Material.getMaterial((String) this.VALUES.get("ChevronMaterial")).hasGravity()) {
-						this.ChevronMaterial = Material.getMaterial((String) this.VALUES.get("ChevronMaterial"));
+			if (Material.getMaterial((String)this.VALUES.get("ChevronMaterial")) !=
+				null) {
+				if (Material.getMaterial((String)this.VALUES.get("ChevronMaterial"))
+						.isSolid()) {
+					if (!Material
+							 .getMaterial((String)this.VALUES.get("ChevronMaterial"))
+							 .hasGravity()) {
+						this.ChevronMaterial = Material.getMaterial(
+							(String)this.VALUES.get("ChevronMaterial"));
 					}
 				}
 			} else {
-				System.out.println("[WARNING] Wrong Material for Chevrons in configfile!");
+				System.out.println(
+					"[WARNING] Wrong Material for Chevrons in configfile!");
 			}
 
-			if ((Material.getMaterial((String) this.VALUES.get("IrisMaterial")) != null)
-					&& (Material.getMaterial((String) this.VALUES.get("IrisMaterial")).isSolid())) {
-				this.ShieldMaterial = Material.getMaterial((String) this.VALUES.get("IrisMaterial"));
+			if ((Material.getMaterial((String)this.VALUES.get("IrisMaterial")) !=
+				 null) &&
+				(Material.getMaterial((String)this.VALUES.get("IrisMaterial"))
+					 .isSolid())) {
+				this.ShieldMaterial =
+					Material.getMaterial((String)this.VALUES.get("IrisMaterial"));
 			}
 
-			if ((this.VALUES.get("DHDDistance") != null)
-					&& (Integer.parseInt((String) this.VALUES.get("DHDDistance")) >= 8)) {
-				this.DHD_Distance = Integer.parseInt((String) this.VALUES.get("DHDDistance"));
+			if ((this.VALUES.get("DHDDistance") != null) &&
+				(Integer.parseInt((String)this.VALUES.get("DHDDistance")) >= 8)) {
+				this.DHD_Distance =
+					Integer.parseInt((String)this.VALUES.get("DHDDistance"));
 			}
 
-			if ((this.VALUES.get("KawooshSoundRadius") != null)
-					&& (Integer.parseInt((String) this.VALUES.get("KawooshSoundRadius")) >= 0)) {
-				this.KawooshSoundRadius = Integer.parseInt((String) this.VALUES.get("KawooshSoundRadius"));
+			if ((this.VALUES.get("KawooshSoundRadius") != null) &&
+				(Integer.parseInt((String)this.VALUES.get("KawooshSoundRadius")) >=
+				 0)) {
+				this.KawooshSoundRadius =
+					Integer.parseInt((String)this.VALUES.get("KawooshSoundRadius"));
 			}
 
-			if ((this.VALUES.get("KawooshSoundVolume") != null)
-					&& (Integer.parseInt((String) this.VALUES.get("KawooshSoundVolume")) >= 0)) {
-				this.KawooshSoundVolume = Integer.parseInt((String) this.VALUES.get("KawooshSoundVolume"));
+			if ((this.VALUES.get("KawooshSoundVolume") != null) &&
+				(Integer.parseInt((String)this.VALUES.get("KawooshSoundVolume")) >=
+				 0)) {
+				this.KawooshSoundVolume =
+					Integer.parseInt((String)this.VALUES.get("KawooshSoundVolume"));
 			}
 
-			if ((this.VALUES.get("IrisDamage") != null)
-					&& (Integer.parseInt((String) this.VALUES.get("IrisDamage")) >= 0)) {
-				this.IrisDamage = Integer.parseInt((String) this.VALUES.get("IrisDamage"));
+			if ((this.VALUES.get("IrisDamage") != null) &&
+				(Integer.parseInt((String)this.VALUES.get("IrisDamage")) >= 0)) {
+				this.IrisDamage =
+					Integer.parseInt((String)this.VALUES.get("IrisDamage"));
 			}
 
-			if ((this.VALUES.get("IrisDestroyInventory") != null)
-					&& ((Integer.parseInt((String) this.VALUES.get("IrisDestroyInventory")) == 0)
-							|| (Integer.parseInt((String) this.VALUES.get("IrisDestroyInventory")) == 1))) {
-				this.IrisDestroyInventory = Integer.parseInt((String) this.VALUES.get("IrisDamage"));
+			if ((this.VALUES.get("IrisDestroyInventory") != null) &&
+				((Integer.parseInt((String)this.VALUES.get("IrisDestroyInventory")) ==
+				  0) ||
+				 (Integer.parseInt((String)this.VALUES.get("IrisDestroyInventory")) ==
+				  1))) {
+				this.IrisDestroyInventory =
+					Integer.parseInt((String)this.VALUES.get("IrisDamage"));
 			}
 
-			if ((this.VALUES.get("Language") != null) && (((String) this.VALUES.get("Language")).length() > 0)) {
-				this.Language = ((String) this.VALUES.get("Language"));
+			if ((this.VALUES.get("Language") != null) &&
+				(((String)this.VALUES.get("Language")).length() > 0)) {
+				this.Language = ((String)this.VALUES.get("Language"));
 			}
 
-			if ((this.VALUES.get("IrisNoTeleport") != null)
-					&& (((String) this.VALUES.get("IrisNoTeleport")).length() > 0)) {
-				this.IrisNoTeleport = ((String) this.VALUES.get("IrisNoTeleport"));
+			if ((this.VALUES.get("IrisNoTeleport") != null) &&
+				(((String)this.VALUES.get("IrisNoTeleport")).length() > 0)) {
+				this.IrisNoTeleport = ((String)this.VALUES.get("IrisNoTeleport"));
 			}
 
-			if ((this.VALUES.get("NetworkTeleportUnallowedPlayers") != null)
-					&& (Integer.parseInt((String) this.VALUES.get("NetworkTeleportUnallowedPlayers")) >= 0)) {
-				this.networkTeleportUnallowedPlayers = Integer
-						.parseInt((String) this.VALUES.get("NetworkTeleportUnallowedPlayers"));
+			if ((this.VALUES.get("NetworkTeleportUnallowedPlayers") != null) &&
+				(Integer.parseInt((String)this.VALUES.get(
+					 "NetworkTeleportUnallowedPlayers")) >= 0)) {
+				this.networkTeleportUnallowedPlayers = Integer.parseInt(
+					(String)this.VALUES.get("NetworkTeleportUnallowedPlayers"));
 			}
 
 			if (this.VALUES.get("RingMaterial") != null) {
-				if (((String) this.VALUES.get("RingMaterial")).length() > 0) {
-					String[] s = ((String) this.VALUES.get("RingMaterial")).split(",");
+				if (((String)this.VALUES.get("RingMaterial")).length() > 0) {
+					String[] s = ((String)this.VALUES.get("RingMaterial")).split(",");
 					if (s.length > 0) {
 						this.RingMaterial = Material.valueOf(s[0]);
 					}
 				}
 			}
 
-			if ((this.VALUES.get("RingGroundMaterial") != null)
-					&& (((String) this.VALUES.get("RingGroundMaterial")).length() > 0)) {
-				String[] value = ((String) this.VALUES.get("RingGroundMaterial")).split(",");
+			if ((this.VALUES.get("RingGroundMaterial") != null) &&
+				(((String)this.VALUES.get("RingGroundMaterial")).length() > 0)) {
+				String[] value =
+					((String)this.VALUES.get("RingGroundMaterial")).split(",");
 				if (value.length > 0) {
 					this.RingGroundMaterial = Material.valueOf(value[0]);
 				}
 			}
 
 			if (this.VALUES.get("RingsDistance") != null) {
-				if ((Integer.parseInt((String) this.VALUES.get("RingDistance")) > -2)
-						|| (Integer.parseInt((String) this.VALUES.get("RingDistance")) <= 5)) {
-					this.RingDistance = Integer.parseInt((String) this.VALUES.get("RingDistance"));
+				if ((Integer.parseInt((String)this.VALUES.get("RingDistance")) > -2) ||
+					(Integer.parseInt((String)this.VALUES.get("RingDistance")) <= 5)) {
+					this.RingDistance =
+						Integer.parseInt((String)this.VALUES.get("RingDistance"));
 				}
 			}
 
 			if (this.VALUES.get("InterWorldConnectionCosts") != null) {
-				String s = (String) this.VALUES.get("InterWorldConnectionCosts");
+				String s = (String)this.VALUES.get("InterWorldConnectionCosts");
 				String[] s2 = s.split(",");
 				if (s2.length == 2) {
-					if ((Integer.parseInt(s2[0]) >= 0) && (Integer.parseInt(s2[1]) >= 0)) {
-						this.InterWorldConnectionCosts = ((String) this.VALUES.get("InterWorldConnectionCosts"));
+					if ((Integer.parseInt(s2[0]) >= 0) &&
+						(Integer.parseInt(s2[1]) >= 0)) {
+						this.InterWorldConnectionCosts =
+							((String)this.VALUES.get("InterWorldConnectionCosts"));
 					}
 				} else {
 					this.InterWorldConnectionCosts = "none";
 				}
 			}
 
-			if ((this.VALUES.get("KawooshSound") != null)
-					&& (Sound.valueOf((String) this.VALUES.get("KawooshSound")) != null)) {
-				this.KawooshSound = Sound.valueOf((String) this.VALUES.get("KawooshSound"));
+			if ((this.VALUES.get("KawooshSound") != null) &&
+				(Sound.valueOf((String)this.VALUES.get("KawooshSound")) != null)) {
+				this.KawooshSound =
+					Sound.valueOf((String)this.VALUES.get("KawooshSound"));
 			}
 		}
 	}

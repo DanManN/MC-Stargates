@@ -1,9 +1,10 @@
 package com.DanMan.MCStargates.stargate;
 
+import com.DanMan.MCStargates.main.MCStargates;
+import com.DanMan.MCStargates.utils.StargateFileReader;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -18,18 +19,15 @@ import org.bukkit.event.Listener;
 import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.util.Vector;
 
-import com.DanMan.MCStargates.main.MCStargates;
-import com.DanMan.MCStargates.utils.StargateFileReader;
-
 public class Stargate implements Listener {
 	public int DHD_DISTANCE;
 	public Material GATE_MATERIAL;
 	public Material DHD_MATERIAL;
 	public Material CHEVRON_MATERIAL;
 	public Material SHIELD_MATERIAL;
-	
+
 	MCStargates plugin;
-	
+
 	private String name;
 	private Location loc;
 	private int worldID = 0;
@@ -47,7 +45,7 @@ public class Stargate implements Listener {
 		CHEVRON_MATERIAL = plugin.getConfigValues().getChevronMaterial();
 		SHIELD_MATERIAL = plugin.getConfigValues().getShieldMaterial();
 	}
-	
+
 	public Vector getPosition() {
 		return new Vector(this.loc.getX(), this.loc.getZ(), this.loc.getY());
 	}
@@ -102,7 +100,7 @@ public class Stargate implements Listener {
 								sT.countForShutdown();
 								activate();
 								updateSign();
-								
+
 								s.activate();
 
 								return true;
@@ -135,7 +133,8 @@ public class Stargate implements Listener {
 
 	public boolean compareNetworkName(String str2) {
 		String str1 = getNetworkName();
-		return ((str1 != null) && (str2 != null)) ? str1.equals(str2) : ((str1 == null) && (str2 == null));
+		return ((str1 != null) && (str2 != null)) ? str1.equals(str2)
+												  : ((str1 == null) && (str2 == null));
 	}
 
 	public boolean stopConnection() {
@@ -188,7 +187,8 @@ public class Stargate implements Listener {
 	}
 
 	public void makeGateShape(Boolean unbreakable) {
-		Location aloc = new Location(this.loc.getWorld(), this.loc.getX(), this.loc.getY(), this.loc.getZ());
+		Location aloc = new Location(this.loc.getWorld(), this.loc.getX(),
+									 this.loc.getY(), this.loc.getZ());
 
 		Vector DHDPos = new Vector(aloc.getX(), aloc.getZ(), aloc.getY());
 		DHDPos.add(getNormalVector());
@@ -199,7 +199,8 @@ public class Stargate implements Listener {
 		Block DHDblock = aloc.getBlock();
 		DHDblock.setType(DHD_MATERIAL);
 		if (unbreakable.booleanValue()) {
-			DHDblock.setMetadata("StargateBlock", new FixedMetadataValue(plugin, "true"));
+			DHDblock.setMetadata("StargateBlock",
+								 new FixedMetadataValue(plugin, "true"));
 
 		} else if (DHDblock.hasMetadata("StargateBlock")) {
 			DHDblock.removeMetadata("StargateBlock", plugin);
@@ -207,12 +208,14 @@ public class Stargate implements Listener {
 
 		ArrayList<Vector> coordinates = getRingCoordinates();
 		for (Vector v : coordinates) {
-			Location location = new Location(this.loc.getWorld(), v.getX(), v.getZ(), v.getY());
+			Location location =
+				new Location(this.loc.getWorld(), v.getX(), v.getZ(), v.getY());
 			Block block = location.getBlock();
 
 			block.setType(GATE_MATERIAL);
 			if (unbreakable.booleanValue()) {
-				block.setMetadata("StargateBlock", new FixedMetadataValue(plugin, "true"));
+				block.setMetadata("StargateBlock",
+								  new FixedMetadataValue(plugin, "true"));
 
 			} else if (block.hasMetadata("StargateBlock")) {
 				block.removeMetadata("StargateBlock", plugin);
@@ -223,7 +226,7 @@ public class Stargate implements Listener {
 	public void updateSign() {
 		BlockState state = this.loc.getBlock().getState();
 		if (state instanceof Sign) {
-			Sign sign = (Sign) state;
+			Sign sign = (Sign)state;
 
 			if ((this.target != null) && (!(this.target.equals("null")))) {
 				sign.setLine(2, "->" + this.target);
@@ -243,12 +246,12 @@ public class Stargate implements Listener {
 
 	public boolean checkSign() {
 		Block b = this.loc.getBlock();
-		//System.out.println(b.toString());
+		// System.out.println(b.toString());
 		if (b.getType() != Material.WALL_SIGN) {
 			return false;
 		}
 
-		Sign sign = (Sign) b.getState();
+		Sign sign = (Sign)b.getState();
 
 		if (!sign.getLine(0).equalsIgnoreCase(ChatColor.GOLD + "[Stargate]")) {
 			return false;
@@ -276,10 +279,12 @@ public class Stargate implements Listener {
 
 		ArrayList<Vector> gateShapePositions = getRingCoordinates();
 		for (Vector v : gateShapePositions) {
-			Location location = new Location(this.loc.getWorld(), v.getX(), v.getZ(), v.getY());
+			Location location =
+				new Location(this.loc.getWorld(), v.getX(), v.getZ(), v.getY());
 			Block b = location.getBlock();
 
-			if ((!b.getType().equals(GATE_MATERIAL)) && (!b.getType().equals(CHEVRON_MATERIAL))) {
+			if ((!b.getType().equals(GATE_MATERIAL)) &&
+				(!b.getType().equals(CHEVRON_MATERIAL))) {
 
 				return false;
 			}
@@ -320,20 +325,23 @@ public class Stargate implements Listener {
 	public void fillGate(Material m) {
 		ArrayList<Vector> array = getInsideCoordinates();
 		for (int i = 0; i < array.size(); i++) {
-			Vector v = (Vector) array.get(i);
-			Location location = new Location((World) Bukkit.getWorlds().get(this.worldID), v.getX(), v.getZ(),
-					v.getY());
+			Vector v = (Vector)array.get(i);
+			Location location =
+				new Location((World)Bukkit.getWorlds().get(this.worldID), v.getX(),
+							 v.getZ(), v.getY());
 			Block block = location.getBlock();
 			block.setType(m);
 			if (m.equals(Material.WATER)) {
-				block.setMetadata("PortalWater", new FixedMetadataValue(plugin, "true"));
+				block.setMetadata("PortalWater",
+								  new FixedMetadataValue(plugin, "true"));
 
 			} else if (block.hasMetadata("PortalWater")) {
 				block.removeMetadata("PortalWater", plugin);
 			}
 
 			if (m.equals(SHIELD_MATERIAL)) {
-				block.setMetadata("StargateBlock", new FixedMetadataValue(plugin, "true"));
+				block.setMetadata("StargateBlock",
+								  new FixedMetadataValue(plugin, "true"));
 
 			} else if (block.hasMetadata("StargateBlock")) {
 				block.removeMetadata("StargateBlock", plugin);
@@ -349,13 +357,16 @@ public class Stargate implements Listener {
 	public void activateChevrons() {
 		ArrayList<Vector> array = getRingCoordinates();
 		for (int i = 0; i < array.size(); i++) {
-			if ((i == 0) || (i == 3) || (i == 4) || (i == 6) || (i == 9) || (i == 11) || (i == 12) || (i == 13)) {
-				Vector v = (Vector) array.get(i);
-				Location location = new Location((World) Bukkit.getWorlds().get(this.worldID), v.getX(), v.getZ(),
-						v.getY());
+			if ((i == 0) || (i == 3) || (i == 4) || (i == 6) || (i == 9) || (i == 11) ||
+				(i == 12) || (i == 13)) {
+				Vector v = (Vector)array.get(i);
+				Location location =
+					new Location((World)Bukkit.getWorlds().get(this.worldID), v.getX(),
+								 v.getZ(), v.getY());
 				Block block = location.getBlock();
 				block.setType(CHEVRON_MATERIAL);
-				block.setMetadata("StargateBlock", new FixedMetadataValue(plugin, "true"));
+				block.setMetadata("StargateBlock",
+								  new FixedMetadataValue(plugin, "true"));
 			}
 		}
 	}
@@ -363,8 +374,9 @@ public class Stargate implements Listener {
 	public void deactivateChevrons() {
 		ArrayList<Vector> array = getRingCoordinates();
 		for (Vector v : array) {
-			Location location = new Location((World) Bukkit.getWorlds().get(this.worldID), v.getX(), v.getZ(),
-					v.getY());
+			Location location =
+				new Location((World)Bukkit.getWorlds().get(this.worldID), v.getX(),
+							 v.getZ(), v.getY());
 			Block block = location.getBlock();
 			block.setType(GATE_MATERIAL);
 			block.setMetadata("StargateBlock", new FixedMetadataValue(plugin, "true"));
@@ -385,22 +397,34 @@ public class Stargate implements Listener {
 		gateShapePositions.add(start.clone().add(sideDirection));
 		gateShapePositions.add(start.clone().subtract(sideDirection));
 
-		gateShapePositions.add(start.clone().add(sideDirection.clone().multiply(2).add(h)));
-		gateShapePositions.add(start.clone().add(sideDirection.clone().multiply(-2).add(h)));
+		gateShapePositions.add(
+			start.clone().add(sideDirection.clone().multiply(2).add(h)));
+		gateShapePositions.add(
+			start.clone().add(sideDirection.clone().multiply(-2).add(h)));
 
-		gateShapePositions.add(start.clone().add(sideDirection.clone().multiply(3).add(h.clone().multiply(2))));
-		gateShapePositions.add(start.clone().add(sideDirection.clone().multiply(3).add(h.clone().multiply(3))));
-		gateShapePositions.add(start.clone().add(sideDirection.clone().multiply(3).add(h.clone().multiply(4))));
-		gateShapePositions.add(start.clone().add(sideDirection.clone().multiply(-3).add(h.clone().multiply(2))));
-		gateShapePositions.add(start.clone().add(sideDirection.clone().multiply(-3).add(h.clone().multiply(3))));
-		gateShapePositions.add(start.clone().add(sideDirection.clone().multiply(-3).add(h.clone().multiply(4))));
+		gateShapePositions.add(start.clone().add(
+			sideDirection.clone().multiply(3).add(h.clone().multiply(2))));
+		gateShapePositions.add(start.clone().add(
+			sideDirection.clone().multiply(3).add(h.clone().multiply(3))));
+		gateShapePositions.add(start.clone().add(
+			sideDirection.clone().multiply(3).add(h.clone().multiply(4))));
+		gateShapePositions.add(start.clone().add(
+			sideDirection.clone().multiply(-3).add(h.clone().multiply(2))));
+		gateShapePositions.add(start.clone().add(
+			sideDirection.clone().multiply(-3).add(h.clone().multiply(3))));
+		gateShapePositions.add(start.clone().add(
+			sideDirection.clone().multiply(-3).add(h.clone().multiply(4))));
 
-		gateShapePositions.add(start.clone().add(sideDirection.clone().multiply(2).add(h.clone().multiply(5))));
-		gateShapePositions.add(start.clone().add(sideDirection.clone().multiply(-2).add(h.clone().multiply(5))));
+		gateShapePositions.add(start.clone().add(
+			sideDirection.clone().multiply(2).add(h.clone().multiply(5))));
+		gateShapePositions.add(start.clone().add(
+			sideDirection.clone().multiply(-2).add(h.clone().multiply(5))));
 
 		gateShapePositions.add(start.clone().add(h.clone().multiply(6)));
-		gateShapePositions.add(start.clone().add(sideDirection).add(h.clone().multiply(6)));
-		gateShapePositions.add(start.clone().subtract(sideDirection).add(h.clone().multiply(6)));
+		gateShapePositions.add(
+			start.clone().add(sideDirection).add(h.clone().multiply(6)));
+		gateShapePositions.add(
+			start.clone().subtract(sideDirection).add(h.clone().multiply(6)));
 
 		return gateShapePositions;
 	}
@@ -416,12 +440,18 @@ public class Stargate implements Listener {
 		start.setZ(start.getZ() - 1.0D);
 		for (int i = 1; i < 6; i++) {
 			WaterPositions.add(start.clone().add(h.clone().multiply(i)));
-			WaterPositions.add(start.clone().add(sideDirection).add(h.clone().multiply(i)));
-			WaterPositions.add(start.clone().subtract(sideDirection).add(h.clone().multiply(i)));
+			WaterPositions.add(
+				start.clone().add(sideDirection).add(h.clone().multiply(i)));
+			WaterPositions.add(
+				start.clone().subtract(sideDirection).add(h.clone().multiply(i)));
 		}
 		for (int i = 1; i < 4; i++) {
-			WaterPositions.add(start.clone().add(sideDirection.clone().multiply(2).add(h)).add(h.clone().multiply(i)));
-			WaterPositions.add(start.clone().add(sideDirection.clone().multiply(-2).add(h)).add(h.clone().multiply(i)));
+			WaterPositions.add(start.clone()
+								   .add(sideDirection.clone().multiply(2).add(h))
+								   .add(h.clone().multiply(i)));
+			WaterPositions.add(start.clone()
+								   .add(sideDirection.clone().multiply(-2).add(h))
+								   .add(h.clone().multiply(i)));
 		}
 		return WaterPositions;
 	}
@@ -430,14 +460,18 @@ public class Stargate implements Listener {
 		Collection<? extends Player> players = Bukkit.getServer().getOnlinePlayers();
 
 		float volume = plugin.getConfigValues().getKawooshSoundVolume();
-		double radiusSquared = plugin.getConfigValues().getKawooshSoundRadius() * plugin.getConfigValues().getKawooshSoundRadius();
+		double radiusSquared = plugin.getConfigValues().getKawooshSoundRadius() *
+							   plugin.getConfigValues().getKawooshSoundRadius();
 		if (radiusSquared > 0.0D) {
 			Iterator<? extends Player> itr = players.iterator();
 			while (itr.hasNext()) {
-				Player p = (Player) itr.next();
-				if ((this.loc.getWorld().getUID().equals(p.getLocation().getWorld().getUID()))
-						&& (p.getLocation().distanceSquared(this.loc) <= radiusSquared)) {
-					volume = (float) (volume * (radiusSquared / p.getLocation().distanceSquared(this.loc)));
+				Player p = (Player)itr.next();
+				if ((this.loc.getWorld().getUID().equals(
+						p.getLocation().getWorld().getUID())) &&
+					(p.getLocation().distanceSquared(this.loc) <= radiusSquared)) {
+					volume =
+						(float)(volume * (radiusSquared /
+										  p.getLocation().distanceSquared(this.loc)));
 					Sound sound = plugin.getConfigValues().getKawooshSound();
 					p.playSound(this.loc, sound, volume, 1.0F);
 				}
@@ -468,63 +502,37 @@ public class Stargate implements Listener {
 		return false;
 	}
 
-	public String getName() {
-		return name;
-	}
+	public String getName() { return name; }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+	public void setName(String name) { this.name = name; }
 
-	public Location getLocation() {
-		return loc;
-	}
+	public Location getLocation() { return loc; }
 
-	public int getWorldID() {
-		return worldID;
-	}
+	public int getWorldID() { return worldID; }
 
-	public void setWorldID(int worldID) {
-		this.worldID = worldID;
-	}
+	public void setWorldID(int worldID) { this.worldID = worldID; }
 
-	public boolean getShieldStatus() {
-		return shieldStatus;
-	}
+	public boolean getShieldStatus() { return shieldStatus; }
 
 	public void setShieldStatus(boolean shieldStatus) {
 		this.shieldStatus = shieldStatus;
 	}
 
-	public boolean getActivationStatus() {
-		return activationStatus;
-	}
+	public boolean getActivationStatus() { return activationStatus; }
 
 	public void setActivationStatus(boolean activationStatus) {
 		this.activationStatus = activationStatus;
 	}
 
-	public String getTarget() {
-		return target;
-	}
+	public String getTarget() { return target; }
 
-	public void setTarget(String target) {
-		this.target = target;
-	}
+	public void setTarget(String target) { this.target = target; }
 
-	public String getDirection() {
-		return direction;
-	}
+	public String getDirection() { return direction; }
 
-	public void setDirection(String direction) {
-		this.direction = direction;
-	}
+	public void setDirection(String direction) { this.direction = direction; }
 
-	public int getTask() {
-		return task;
-	}
+	public int getTask() { return task; }
 
-	public void setTask(int task) {
-		this.task = task;
-	}
+	public void setTask(int task) { this.task = task; }
 }

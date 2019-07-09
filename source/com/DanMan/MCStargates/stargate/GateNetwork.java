@@ -1,13 +1,12 @@
 package com.DanMan.MCStargates.stargate;
 
+import com.DanMan.MCStargates.main.MCStargates;
+import com.DanMan.MCStargates.utils.StargateFileReader;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-
-import com.DanMan.MCStargates.main.MCStargates;
-import com.DanMan.MCStargates.utils.StargateFileReader;
 
 public class GateNetwork {
 	public String name;
@@ -103,8 +102,8 @@ public class GateNetwork {
 	}
 
 	public boolean allowsPlayer(String name) {
-		if ((this.state.equals("private")) && (!this.networkmembers.contains(name))
-				&& (!this.networkadmins.contains(name))) {
+		if ((this.state.equals("private")) && (!this.networkmembers.contains(name)) &&
+			(!this.networkadmins.contains(name))) {
 			return false;
 		}
 
@@ -185,7 +184,7 @@ public class GateNetwork {
 		String s = "";
 		s = s + this.name + ";";
 		for (int i = 0; i < g.networkadmins.size(); i++) {
-			s = s + (String) g.networkadmins.get(i);
+			s = s + (String)g.networkadmins.get(i);
 			if (i != g.networkadmins.size() - 1) {
 				s = s + ",";
 			}
@@ -193,7 +192,7 @@ public class GateNetwork {
 		s = s + ";";
 
 		for (int i = 0; i < g.networkmembers.size(); i++) {
-			s = s + (String) g.networkmembers.get(i);
+			s = s + (String)g.networkmembers.get(i);
 			if (i != g.networkmembers.size() - 1) {
 				s = s + ",";
 			}
@@ -201,7 +200,7 @@ public class GateNetwork {
 		s = s + ";";
 
 		for (int i = 0; i < g.networkstargates.size(); i++) {
-			s = s + (String) g.networkstargates.get(i);
+			s = s + (String)g.networkstargates.get(i);
 			if (i != g.networkstargates.size() - 1) {
 				s = s + ",";
 			}
@@ -216,7 +215,7 @@ public class GateNetwork {
 	public boolean save() {
 		ArrayList<GateNetwork> allNetworks = getNetworkList();
 		for (int i = 0; i < allNetworks.size(); ++i) {
-			if (((GateNetwork) allNetworks.get(i)).name.equals(this.name)) {
+			if (((GateNetwork)allNetworks.get(i)).name.equals(this.name)) {
 				allNetworks.set(i, this);
 				break;
 			}
@@ -224,7 +223,8 @@ public class GateNetwork {
 		PrintWriter pWriter = null;
 		try {
 			pWriter = new PrintWriter(this.filepath, "UTF-8");
-			pWriter.println("# Saves all the Networks:  name, admins, members, stargates");
+			pWriter.println(
+				"# Saves all the Networks:  name, admins, members, stargates");
 			for (GateNetwork network : allNetworks) {
 				String networkString = NetworkToString(network);
 				pWriter.println(networkString);

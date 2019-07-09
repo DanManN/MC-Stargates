@@ -12,7 +12,8 @@ public class LanguageFileReader {
 
 	private String default_lang = "en";
 	private String filetype = ".txt";
-	private String path = "plugins/MC-Stargates/language_" + this.default_lang + this.filetype;
+	private String path =
+		"plugins/MC-Stargates/language_" + this.default_lang + this.filetype;
 
 	public LanguageFileReader(String language) {
 		if (checkLanguageFile(language)) {
@@ -22,7 +23,8 @@ public class LanguageFileReader {
 	}
 
 	public boolean checkLanguageFile(String language) {
-		File languageData = new File("plugins/MC-Stargates/language_" + language + this.filetype);
+		File languageData =
+			new File("plugins/MC-Stargates/language_" + language + this.filetype);
 		if (!languageData.exists()) {
 			return false;
 		}
@@ -52,12 +54,14 @@ public class LanguageFileReader {
 	}
 
 	public String get(String key, ArrayList<String> list) {
-		String Str = (String) this.LANGUAGE.get(key);
+		String Str = (String)this.LANGUAGE.get(key);
 		String formatted;
 		if (Str != null) {
 			formatted = String.format(Str, list.toArray());
 		} else {
-			formatted = "The LanguagePack is damaged or outdated. Report this to your Admin. (key=" + key + ")";
+			formatted =
+				"The LanguagePack is damaged or outdated. Report this to your Admin. (key=" +
+				key + ")";
 		}
 		return formatted;
 	}
@@ -66,12 +70,14 @@ public class LanguageFileReader {
 		ArrayList<String> a = new ArrayList<String>();
 		a.add(oneArgument);
 		String formatted = "";
-		String Str = (String) this.LANGUAGE.get(key);
+		String Str = (String)this.LANGUAGE.get(key);
 
 		if (Str != null) {
 			formatted = String.format(Str, a.toArray());
 		} else {
-			formatted = "The LanguagePack is damaged or outdated. Report this to your Admin. (key=" + key + ")";
+			formatted =
+				"The LanguagePack is damaged or outdated. Report this to your Admin. (key=" +
+				key + ")";
 		}
 
 		return formatted;

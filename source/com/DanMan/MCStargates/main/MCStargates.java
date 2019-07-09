@@ -1,5 +1,13 @@
 package com.DanMan.MCStargates.main;
 
+import com.DanMan.MCStargates.rings.Ringtransporter;
+import com.DanMan.MCStargates.stargate.GateNetwork;
+import com.DanMan.MCStargates.stargate.Stargate;
+import com.DanMan.MCStargates.utils.ConfigFileReader;
+import com.DanMan.MCStargates.utils.LanguageFileReader;
+import com.DanMan.MCStargates.utils.PlayerDataReader;
+import com.DanMan.MCStargates.utils.SignUtils;
+import com.DanMan.MCStargates.utils.StargateFileReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -7,7 +15,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
-
 import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.Location;
@@ -15,7 +22,6 @@ import org.bukkit.Material;
 import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.block.BlockFace;
-import org.bukkit.block.BlockState;
 import org.bukkit.block.Sign;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
@@ -42,15 +48,6 @@ import org.bukkit.inventory.ItemStack;
 import org.bukkit.metadata.MetadataValue;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.util.Vector;
-
-import com.DanMan.MCStargates.rings.Ringtransporter;
-import com.DanMan.MCStargates.stargate.GateNetwork;
-import com.DanMan.MCStargates.stargate.Stargate;
-import com.DanMan.MCStargates.utils.ConfigFileReader;
-import com.DanMan.MCStargates.utils.LanguageFileReader;
-import com.DanMan.MCStargates.utils.PlayerDataReader;
-import com.DanMan.MCStargates.utils.SignUtils;
-import com.DanMan.MCStargates.utils.StargateFileReader;
 
 public class MCStargates extends JavaPlugin implements Listener {
 	public Map<String, String> START_GATES = new HashMap();
@@ -97,9 +94,7 @@ public class MCStargates extends JavaPlugin implements Listener {
 		getLogger().info("MC-Stargates: Disabled");
 	}
 
-	public ConfigFileReader getConfigValues() {
-		return configValues;
-	}
+	public ConfigFileReader getConfigValues() { return configValues; }
 
 	public void setConfigValues(ConfigFileReader configValues) {
 		this.configValues = configValues;
@@ -118,11 +113,12 @@ public class MCStargates extends JavaPlugin implements Listener {
 	public void defineStargate(SignChangeEvent sign) throws Exception {
 		Player player = sign.getPlayer();
 		if (player.hasPermission("stargate.register")) {
-			if ((!(sign.getLine(0).equalsIgnoreCase("[Stargate]"))) || (sign.getLine(1).equals("")))
+			if ((!(sign.getLine(0).equalsIgnoreCase("[Stargate]"))) ||
+				(sign.getLine(1).equals("")))
 				return;
 			String gateName = sign.getLine(1);
 
-			org.bukkit.block.Sign s = (org.bukkit.block.Sign) sign.getBlock().getState();
+			org.bukkit.block.Sign s = (org.bukkit.block.Sign)sign.getBlock().getState();
 			SignUtils su = new SignUtils();
 
 			Stargate stargate = new Stargate(this);
@@ -146,13 +142,15 @@ public class MCStargates extends JavaPlugin implements Listener {
 							if (!sign.getLine(3).equals("")) {
 								networkName = sign.getLine(3);
 
-								GateNetwork emptyNetwork = new GateNetwork(player.getName(), networkName, this);
+								GateNetwork emptyNetwork = new GateNetwork(
+									player.getName(), networkName, this);
 
 								if (emptyNetwork.getNetwork(networkName) == null) {
 									emptyNetwork.addGate(stargate.getName());
 									emptyNetwork.save();
 								} else {
-									GateNetwork existingNetwork = emptyNetwork.getNetwork(networkName);
+									GateNetwork existingNetwork =
+										emptyNetwork.getNetwork(networkName);
 									if (existingNetwork.hasAdmin(player.getName())) {
 										existingNetwork.addGate(stargate.getName());
 										existingNetwork.save();
@@ -161,31 +159,39 @@ public class MCStargates extends JavaPlugin implements Listener {
 								stargate.updateSign();
 							}
 						} else {
-							player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-									+ language.get("networkNoPermissionCreate", ""));
+							player.sendMessage(
+								ChatColor.GOLD + language.get("pluginNameChat", "") +
+								ChatColor.RED +
+								language.get("networkNoPermissionCreate", ""));
 						}
 
-						sign.getPlayer().sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-								+ ChatColor.GREEN + language.get("gateCreated", stargate.getName()));
+						sign.getPlayer().sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.GREEN +
+							language.get("gateCreated", stargate.getName()));
 						return;
 					}
 					sign.setLine(0, ChatColor.RED + "Stargate");
-					sign.getPlayer().sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-							+ language.get("gateNameExists", ""));
+					sign.getPlayer().sendMessage(
+						ChatColor.GOLD + language.get("pluginNameChat", "") +
+						ChatColor.RED + language.get("gateNameExists", ""));
 				} catch (Exception e) {
 					e.printStackTrace();
 					sign.setLine(0, ChatColor.RED + "Stargate");
-					sign.getPlayer().sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-							+ language.get("gateCreationFailed", ""));
+					sign.getPlayer().sendMessage(
+						ChatColor.GOLD + language.get("pluginNameChat", "") +
+						ChatColor.RED + language.get("gateCreationFailed", ""));
 				}
 			} else {
 				sign.setLine(0, ChatColor.RED + "Stargate");
-				sign.getPlayer().sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-						+ language.get("gateNotArround", ""));
+				sign.getPlayer().sendMessage(
+					ChatColor.GOLD + language.get("pluginNameChat", "") +
+					ChatColor.RED + language.get("gateNotArround", ""));
 			}
 		} else {
-			player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-					+ language.get("permissionNotAllowed", ""));
+			player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") +
+							   ChatColor.RED +
+							   language.get("permissionNotAllowed", ""));
 		}
 	}
 
@@ -201,8 +207,9 @@ public class MCStargates extends JavaPlugin implements Listener {
 				}
 			} else {
 				sign.setLine(0, "Rings");
-				player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-						+ language.get("permissionNotAllowed", ""));
+				player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") +
+								   ChatColor.RED +
+								   language.get("permissionNotAllowed", ""));
 			}
 		}
 	}
@@ -212,7 +219,7 @@ public class MCStargates extends JavaPlugin implements Listener {
 		Block b = event.getBlock();
 
 		if (b.getType().equals(Material.WALL_SIGN)) {
-			org.bukkit.block.Sign sign = (org.bukkit.block.Sign) b.getState();
+			org.bukkit.block.Sign sign = (org.bukkit.block.Sign)b.getState();
 			if (sign.getLine(0).equalsIgnoreCase(ChatColor.GOLD + "[Stargate]")) {
 
 				StargateFileReader sfr = new StargateFileReader(this);
@@ -245,7 +252,8 @@ public class MCStargates extends JavaPlugin implements Listener {
 				Ringtransporter target = rt.getPartner();
 
 				if (target != null) {
-					if ((event.getNewCurrent() > 0) && (rt.checkConstuction()) && (target.checkConstuction())) {
+					if ((event.getNewCurrent() > 0) && (rt.checkConstuction()) &&
+						(target.checkConstuction())) {
 						rt.makeAnimation(true);
 						target.makeAnimation(false);
 					}
@@ -257,22 +265,27 @@ public class MCStargates extends JavaPlugin implements Listener {
 	@EventHandler
 	public void leftClickGateSign(PlayerInteractEvent e) {
 		if (e.getPlayer().hasPermission("stargate.close")) {
-			if ((e.getAction() != Action.LEFT_CLICK_BLOCK) || (e.getClickedBlock().getType() != Material.WALL_SIGN))
+			if ((e.getAction() != Action.LEFT_CLICK_BLOCK) ||
+				(e.getClickedBlock().getType() != Material.WALL_SIGN))
 				return;
 			Block block = e.getClickedBlock();
-			org.bukkit.block.Sign sign = (org.bukkit.block.Sign) block.getState();
+			org.bukkit.block.Sign sign = (org.bukkit.block.Sign)block.getState();
 
 			if (sign.getLine(0).equalsIgnoreCase(ChatColor.GOLD + "[Stargate]")) {
 				String gateName = sign.getLine(1);
 				StargateFileReader sfr = new StargateFileReader(this);
 				try {
 					Stargate s = sfr.getStargate(gateName);
-					if ((s == null) || (!s.getActivationStatus()) || (s.getTarget().equals("null")))
+					if ((s == null) || (!s.getActivationStatus()) ||
+						(s.getTarget().equals("null")))
 						return;
 					GateNetwork gn;
-					if (((gn = s.getNetwork()) != null) && (!gn.allowsPlayer(e.getPlayer().getName()))) {
-						e.getPlayer().sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("networkPlayerNotAllowed", ""));
+					if (((gn = s.getNetwork()) != null) &&
+						(!gn.allowsPlayer(e.getPlayer().getName()))) {
+						e.getPlayer().sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED +
+							language.get("networkPlayerNotAllowed", ""));
 						return;
 					}
 
@@ -280,25 +293,28 @@ public class MCStargates extends JavaPlugin implements Listener {
 					args.add(s.getName());
 					args.add(s.getTarget());
 					s.stopConnection();
-					e.getPlayer().sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN
-							+ language.get("gateConnectionClosed", args));
+					e.getPlayer().sendMessage(
+						ChatColor.GOLD + language.get("pluginNameChat", "") +
+						ChatColor.GREEN + language.get("gateConnectionClosed", args));
 
 				} catch (Exception localException) {
 				}
 			}
 
 		} else {
-			e.getPlayer().sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-					+ language.get("permissionNotAllowed", ""));
+			e.getPlayer().sendMessage(
+				ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED +
+				language.get("permissionNotAllowed", ""));
 		}
 	}
 
 	@EventHandler
 	public void rightClickSign(PlayerInteractEvent e) {
-		if ((e.getAction() != Action.RIGHT_CLICK_BLOCK) || (e.getClickedBlock().getType() != Material.WALL_SIGN))
+		if ((e.getAction() != Action.RIGHT_CLICK_BLOCK) ||
+			(e.getClickedBlock().getType() != Material.WALL_SIGN))
 			return;
 		Block block = e.getClickedBlock();
-		org.bukkit.block.Sign sign = (org.bukkit.block.Sign) block.getState();
+		org.bukkit.block.Sign sign = (org.bukkit.block.Sign)block.getState();
 
 		if (sign.getLine(0).equalsIgnoreCase(ChatColor.GOLD + "[Stargate]")) {
 			e.setCancelled(true);
@@ -312,8 +328,9 @@ public class MCStargates extends JavaPlugin implements Listener {
 					if ((!s.checkGateShape()) || (!s.checkSign())) {
 						ArrayList<String> args = new ArrayList();
 						args.add(s.getName());
-						e.getPlayer().sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("gateDestroyed", args));
+						e.getPlayer().sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + language.get("gateDestroyed", args));
 					} else {
 						this.START_GATES.put(e.getPlayer().getName(), s.getName());
 
@@ -321,19 +338,27 @@ public class MCStargates extends JavaPlugin implements Listener {
 							ArrayList<String> args = new ArrayList();
 							args.add(s.getName());
 							args.add(s.getTarget());
-							e.getPlayer().sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-									+ ChatColor.GREEN + language.get("gateSelectedHasTarget", args));
+							e.getPlayer().sendMessage(
+								ChatColor.GOLD + language.get("pluginNameChat", "") +
+								ChatColor.GREEN +
+								language.get("gateSelectedHasTarget", args));
 						} else {
-							e.getPlayer().sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-									+ ChatColor.GREEN + language.get("gateSelected", s.getName()));
+							e.getPlayer().sendMessage(
+								ChatColor.GOLD + language.get("pluginNameChat", "") +
+								ChatColor.GREEN +
+								language.get("gateSelected", s.getName()));
 						}
 
 						if (e.getPlayer().hasPermission("stargate.discover")) {
-							PlayerDataReader pdr = new PlayerDataReader(e.getPlayer(), this);
+							PlayerDataReader pdr =
+								new PlayerDataReader(e.getPlayer(), this);
 							if (!pdr.knowsGate(gateName)) {
 								pdr.saveStargate(gateName);
-								e.getPlayer().sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-										+ ChatColor.GREEN + language.get("gateNewAddress", s.getName()));
+								e.getPlayer().sendMessage(
+									ChatColor.GOLD +
+									language.get("pluginNameChat", "") +
+									ChatColor.GREEN +
+									language.get("gateNewAddress", s.getName()));
 							}
 						}
 					}
@@ -354,16 +379,20 @@ public class MCStargates extends JavaPlugin implements Listener {
 						rt.makeAnimation(true);
 						target.makeAnimation(false);
 					} else {
-						e.getPlayer().sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("ringsConstructionDamaged", ""));
+						e.getPlayer().sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED +
+							language.get("ringsConstructionDamaged", ""));
 					}
 				} else {
-					e.getPlayer().sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-							+ language.get("ringsNoTarget", ""));
+					e.getPlayer().sendMessage(
+						ChatColor.GOLD + language.get("pluginNameChat", "") +
+						ChatColor.RED + language.get("ringsNoTarget", ""));
 				}
 			} else {
-				e.getPlayer().sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-						+ language.get("permissionNotAllowed", ""));
+				e.getPlayer().sendMessage(
+					ChatColor.GOLD + language.get("pluginNameChat", "") +
+					ChatColor.RED + language.get("permissionNotAllowed", ""));
 			}
 		}
 	}
@@ -374,8 +403,9 @@ public class MCStargates extends JavaPlugin implements Listener {
 			Player player = event.getPlayer();
 			event.getFrom().add(new Vector(1, 1, 1));
 			player.setHealth(0.0D);
-			player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-					+ language.get("playerKilledByKawoosh", ""));
+			player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") +
+							   ChatColor.RED +
+							   language.get("playerKilledByKawoosh", ""));
 		}
 	}
 
@@ -398,18 +428,19 @@ public class MCStargates extends JavaPlugin implements Listener {
 						}
 					}
 					Vector direction = target.getNormalVector();
-					Vector start = target.getPosition().add(direction.clone().multiply(s.DHD_DISTANCE - 1));
-					Location newLoc = new Location((World) Bukkit.getWorlds().get(target.getWorldID()), start.getX(),
-							start.getZ(), start.getY());
+					Vector start = target.getPosition().add(
+						direction.clone().multiply(s.DHD_DISTANCE - 1));
+					Location newLoc =
+						new Location((World)Bukkit.getWorlds().get(target.getWorldID()),
+									 start.getX(), start.getZ(), start.getY());
 					e.getVehicle().teleport(newLoc);
 				}
-
 			}
 
 		} else if (entity instanceof Player) {
 			Stargate s = getHorizonEntityIsInside(entity);
 			if (s != null) {
-				Player p = (Player) entity;
+				Player p = (Player)entity;
 				PlayerMoveEvent pEvent = new PlayerMoveEvent(p, e.getFrom(), e.getTo());
 				playerInStargate(pEvent);
 			}
@@ -428,9 +459,11 @@ public class MCStargates extends JavaPlugin implements Listener {
 						}
 					}
 					Vector direction = target.getNormalVector();
-					Vector start = target.getPosition().add(direction.clone().multiply(s.DHD_DISTANCE - 1));
-					Location newLoc = new Location((World) Bukkit.getWorlds().get(target.getWorldID()), start.getX(),
-							start.getZ(), start.getY());
+					Vector start = target.getPosition().add(
+						direction.clone().multiply(s.DHD_DISTANCE - 1));
+					Location newLoc =
+						new Location((World)Bukkit.getWorlds().get(target.getWorldID()),
+									 start.getX(), start.getZ(), start.getY());
 					e.getVehicle().eject();
 
 					e.getVehicle().teleport(newLoc);
@@ -451,15 +484,18 @@ public class MCStargates extends JavaPlugin implements Listener {
 			StargateFileReader sfr = new StargateFileReader(this);
 			Stargate target = sfr.getStargate(s.getTarget());
 
-			if ((configValues.getIrisNoTeleport().equals("true")) && (target.getShieldStatus())) {
+			if ((configValues.getIrisNoTeleport().equals("true")) &&
+				(target.getShieldStatus())) {
 				target = s;
 			}
 
-			if ((s.getNetwork() != null) && (!s.getNetwork().allowsPlayer(player.getName()))
-					&& (configValues.getNetworkTeleportUnallowedPlayers() == 0)) {
+			if ((s.getNetwork() != null) &&
+				(!s.getNetwork().allowsPlayer(player.getName())) &&
+				(configValues.getNetworkTeleportUnallowedPlayers() == 0)) {
 				target = s;
-				event.getPlayer().sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-						+ language.get("networkPlayerNotAllowed", ""));
+				event.getPlayer().sendMessage(
+					ChatColor.GOLD + language.get("pluginNameChat", "") +
+					ChatColor.RED + language.get("networkPlayerNotAllowed", ""));
 			}
 
 			if (target == null) {
@@ -467,9 +503,11 @@ public class MCStargates extends JavaPlugin implements Listener {
 			}
 
 			Vector direction = target.getNormalVector();
-			Vector start = target.getPosition().add(direction.clone().multiply(s.DHD_DISTANCE - 1));
-			Location newLoc = new Location((World) Bukkit.getWorlds().get(target.getWorldID()), start.getX(),
-					start.getZ(), start.getY());
+			Vector start = target.getPosition().add(
+				direction.clone().multiply(s.DHD_DISTANCE - 1));
+			Location newLoc =
+				new Location((World)Bukkit.getWorlds().get(target.getWorldID()),
+							 start.getX(), start.getZ(), start.getY());
 
 			if (direction.equals(new Vector(1, 0, 0))) {
 				newLoc.setYaw(90.0F);
@@ -505,8 +543,8 @@ public class MCStargates extends JavaPlugin implements Listener {
 
 			if ((player.teleport(newLoc)) && (target.getShieldStatus())) {
 
-				if ((player.getHealth() - configValues.getIrisDamage() <= 0.0D)
-						&& (configValues.getIrisDestroyInventory() == 1)) {
+				if ((player.getHealth() - configValues.getIrisDamage() <= 0.0D) &&
+					(configValues.getIrisDestroyInventory() == 1)) {
 					player.getInventory().clear();
 				}
 
@@ -514,8 +552,9 @@ public class MCStargates extends JavaPlugin implements Listener {
 				health = health < 0 ? 0 : health;
 				player.setHealth(health);
 
-				player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-						+ language.get("playerDamagedByIris", ""));
+				player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") +
+								   ChatColor.RED +
+								   language.get("playerDamagedByIris", ""));
 			}
 
 			for (Player players : Bukkit.getOnlinePlayers()) {
@@ -527,8 +566,10 @@ public class MCStargates extends JavaPlugin implements Listener {
 	@EventHandler
 	public void onBlockFromTo(BlockFromToEvent event) {
 		Block block = event.getBlock();
-		if ((!(block.hasMetadata("PortalWater")))
-				|| (!(((MetadataValue) block.getMetadata("PortalWater").get(0)).asString().equals("true"))))
+		if ((!(block.hasMetadata("PortalWater"))) ||
+			(!(((MetadataValue)block.getMetadata("PortalWater").get(0))
+				   .asString()
+				   .equals("true"))))
 			return;
 		int id = block.getTypeId();
 		if ((id == 8) || (id == 9))
@@ -537,31 +578,34 @@ public class MCStargates extends JavaPlugin implements Listener {
 
 	@EventHandler
 	public void destroyStargateBlock(BlockBreakEvent event) throws IOException {
-		if ((event.getBlock().getType().equals(configValues.getGateMaterial())
-				|| event.getBlock().getType().equals(configValues.getDHDMaterial())
-				|| event.getBlock().getType().equals(configValues.getChevronMaterial()))
-				&& event.getBlock().hasMetadata("StargateBlock")) {
+		if ((event.getBlock().getType().equals(configValues.getGateMaterial()) ||
+			 event.getBlock().getType().equals(configValues.getDHDMaterial()) ||
+			 event.getBlock().getType().equals(configValues.getChevronMaterial())) &&
+			event.getBlock().hasMetadata("StargateBlock")) {
 			event.setCancelled(true);
 		}
 
 		if (event.getBlock().getType().equals(Material.WALL_SIGN)) {
-			org.bukkit.block.Sign sign = (org.bukkit.block.Sign) event.getBlock().getState();
+			org.bukkit.block.Sign sign =
+				(org.bukkit.block.Sign)event.getBlock().getState();
 			if (sign.getLine(0).equalsIgnoreCase(ChatColor.GOLD + "[Stargate]"))
 				event.setCancelled(true);
 		}
 	}
 
 	@EventHandler
-	public void PistonStargateBlockExtend(BlockPistonExtendEvent event) throws IOException {
+	public void PistonStargateBlockExtend(BlockPistonExtendEvent event)
+		throws IOException {
 		for (int i = 0; i < event.getBlocks().size(); i++) {
-			if (((Block) event.getBlocks().get(i)).hasMetadata("StargateBlock")) {
+			if (((Block)event.getBlocks().get(i)).hasMetadata("StargateBlock")) {
 				event.setCancelled(true);
 			}
 		}
 	}
 
 	@EventHandler
-	public void PistonStargateBlockRetract(BlockPistonRetractEvent event) throws IOException {
+	public void PistonStargateBlockRetract(BlockPistonRetractEvent event)
+		throws IOException {
 		if (event.getBlock().hasMetadata("StargateBlock")) {
 			event.setCancelled(true);
 		}
@@ -571,14 +615,16 @@ public class MCStargates extends JavaPlugin implements Listener {
 	public void ExplodeStargateBlock(EntityExplodeEvent event) throws IOException {
 		if (event.getEntityType().equals(EntityType.PRIMED_TNT))
 			for (int i = 0; i < event.blockList().size(); ++i) {
-				if ((!(((Block) event.blockList().get(i)).hasMetadata("StargateBlock")))
-						&& (!(((Block) event.blockList().get(i)).hasMetadata("PortalWater"))))
+				if ((!(((Block)event.blockList().get(i))
+						   .hasMetadata("StargateBlock"))) &&
+					(!(((Block)event.blockList().get(i)).hasMetadata("PortalWater"))))
 					continue;
 				event.blockList().remove(i);
 			}
 	}
 
-	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
+	public boolean onCommand(CommandSender sender, Command cmd, String commandLabel,
+							 String[] args) {
 		if (cmd.getName().equalsIgnoreCase(this.commandprefix)) {
 			if (!(sender instanceof Player))
 				return true;
@@ -589,66 +635,106 @@ public class MCStargates extends JavaPlugin implements Listener {
 				return true;
 			}
 			if (args[0] != null) {
-				if ((args[0].equalsIgnoreCase("help")) || (args[0].equalsIgnoreCase("?"))) {
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + " Help:");
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN + " /"
-							+ this.commandprefix + " " + this.commandBuild + " <north/south/...> (creativmode only)");
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN + " /"
-							+ this.commandprefix + " " + this.commandActivate + " <targetname>");
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN + " /"
-							+ this.commandprefix + " " + this.commandDeactivate);
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN + " /"
-							+ this.commandprefix + " " + this.commandRemove + " (unregisters from database)");
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN + " /"
-							+ this.commandprefix + " " + this.commandShield);
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN + " /"
-							+ this.commandprefix + " " + this.commandGatelist);
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN + " /"
-							+ this.commandprefix + " " + this.commandRepair + " <gatename>");
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN + " /"
-							+ this.commandprefix + " " + this.commandNetwork + " add <networkname>");
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN + " /"
-							+ this.commandprefix + " " + this.commandNetwork + " remove");
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN + " /"
-							+ this.commandprefix + " " + this.commandNetwork + " op/deop <playername>");
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN + " /"
-							+ this.commandprefix + " " + this.commandNetwork + " allow/unallow <playername>");
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN + " /"
-							+ this.commandprefix + " " + this.commandNetwork + " private/public");
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN + " /"
-							+ this.commandprefix + " " + this.commandNetwork + " setName <new networkname>");
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN
-							+ " To register a Stargate, place a sign at the front of the DHD: First line \"[Stargate]\", second line <Gatename> (optional: fourth line <networkname>.");
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN
-							+ " Distance DHD->Stargate: " + (configValues.getDHD_Distance() - 1));
+				if ((args[0].equalsIgnoreCase("help")) ||
+					(args[0].equalsIgnoreCase("?"))) {
+					player.sendMessage(ChatColor.GOLD +
+									   language.get("pluginNameChat", "") + " Help:");
+					player.sendMessage(
+						ChatColor.GOLD + language.get("pluginNameChat", "") +
+						ChatColor.GREEN + " /" + this.commandprefix + " " +
+						this.commandBuild + " <north/south/...> (creativmode only)");
+					player.sendMessage(ChatColor.GOLD +
+									   language.get("pluginNameChat", "") +
+									   ChatColor.GREEN + " /" + this.commandprefix +
+									   " " + this.commandActivate + " <targetname>");
+					player.sendMessage(ChatColor.GOLD +
+									   language.get("pluginNameChat", "") +
+									   ChatColor.GREEN + " /" + this.commandprefix +
+									   " " + this.commandDeactivate);
+					player.sendMessage(
+						ChatColor.GOLD + language.get("pluginNameChat", "") +
+						ChatColor.GREEN + " /" + this.commandprefix + " " +
+						this.commandRemove + " (unregisters from database)");
+					player.sendMessage(ChatColor.GOLD +
+									   language.get("pluginNameChat", "") +
+									   ChatColor.GREEN + " /" + this.commandprefix +
+									   " " + this.commandShield);
+					player.sendMessage(ChatColor.GOLD +
+									   language.get("pluginNameChat", "") +
+									   ChatColor.GREEN + " /" + this.commandprefix +
+									   " " + this.commandGatelist);
+					player.sendMessage(ChatColor.GOLD +
+									   language.get("pluginNameChat", "") +
+									   ChatColor.GREEN + " /" + this.commandprefix +
+									   " " + this.commandRepair + " <gatename>");
+					player.sendMessage(
+						ChatColor.GOLD + language.get("pluginNameChat", "") +
+						ChatColor.GREEN + " /" + this.commandprefix + " " +
+						this.commandNetwork + " add <networkname>");
+					player.sendMessage(ChatColor.GOLD +
+									   language.get("pluginNameChat", "") +
+									   ChatColor.GREEN + " /" + this.commandprefix +
+									   " " + this.commandNetwork + " remove");
+					player.sendMessage(
+						ChatColor.GOLD + language.get("pluginNameChat", "") +
+						ChatColor.GREEN + " /" + this.commandprefix + " " +
+						this.commandNetwork + " op/deop <playername>");
+					player.sendMessage(
+						ChatColor.GOLD + language.get("pluginNameChat", "") +
+						ChatColor.GREEN + " /" + this.commandprefix + " " +
+						this.commandNetwork + " allow/unallow <playername>");
+					player.sendMessage(ChatColor.GOLD +
+									   language.get("pluginNameChat", "") +
+									   ChatColor.GREEN + " /" + this.commandprefix +
+									   " " + this.commandNetwork + " private/public");
+					player.sendMessage(
+						ChatColor.GOLD + language.get("pluginNameChat", "") +
+						ChatColor.GREEN + " /" + this.commandprefix + " " +
+						this.commandNetwork + " setName <new networkname>");
+					player.sendMessage(
+						ChatColor.GOLD + language.get("pluginNameChat", "") +
+						ChatColor.GREEN +
+						" To register a Stargate, place a sign at the front of the DHD: First line \"[Stargate]\", second line <Gatename> (optional: fourth line <networkname>.");
+					player.sendMessage(ChatColor.GOLD +
+									   language.get("pluginNameChat", "") +
+									   ChatColor.GREEN + " Distance DHD->Stargate: " +
+									   (configValues.getDHD_Distance() - 1));
 
 					return true;
 				}
 
 				if (args[0].equalsIgnoreCase(this.commandBuild)) {
 					if (!player.hasPermission("stargate.command.build")) {
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ " You dont have permission to do this.");
+						player.sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + " You dont have permission to do this.");
 						return true;
 					}
 					if (args.length == 2) {
-						if ((args[1].equalsIgnoreCase("NORTH")) || (args[1].equalsIgnoreCase("EAST"))
-								|| (args[1].equalsIgnoreCase("SOUTH")) || (args[1].equalsIgnoreCase("WEST"))) {
+						if ((args[1].equalsIgnoreCase("NORTH")) ||
+							(args[1].equalsIgnoreCase("EAST")) ||
+							(args[1].equalsIgnoreCase("SOUTH")) ||
+							(args[1].equalsIgnoreCase("WEST"))) {
 							String skydirection = args[1].toUpperCase();
 							Stargate s = new Stargate(this);
-							s.setLocation(Bukkit.getPlayer(sender.getName()).getLocation());
+							s.setLocation(
+								Bukkit.getPlayer(sender.getName()).getLocation());
 							s.setDirection(skydirection);
 							s.makeGateShape(false);
-							player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN
-									+ language.get("gateBuild", ""));
+							player.sendMessage(
+								ChatColor.GOLD + language.get("pluginNameChat", "") +
+								ChatColor.GREEN + language.get("gateBuild", ""));
 						} else {
-							player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-									+ language.get("commandWrongArguments", ""));
+							player.sendMessage(
+								ChatColor.GOLD + language.get("pluginNameChat", "") +
+								ChatColor.RED +
+								language.get("commandWrongArguments", ""));
 							return true;
 						}
 					} else {
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("commandWrongArguments", ""));
+						player.sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + language.get("commandWrongArguments", ""));
 						return true;
 					}
 					return true;
@@ -656,23 +742,28 @@ public class MCStargates extends JavaPlugin implements Listener {
 
 				if (args[0].equalsIgnoreCase(this.commandRemove)) {
 					if (!player.hasPermission("stargate.command.remove")) {
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("permissionNotAllowed", ""));
+						player.sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + language.get("permissionNotAllowed", ""));
 						return true;
 					}
 					StargateFileReader sfr = new StargateFileReader(this);
-					String startGate = (String) this.START_GATES.get(sender.getName());
+					String startGate = (String)this.START_GATES.get(sender.getName());
 					if (startGate != null) {
 						Stargate s = sfr.getStargate(startGate);
 						if (s == null) {
-							player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-									+ language.get("gateNotInDatabase", ""));
+							player.sendMessage(
+								ChatColor.GOLD + language.get("pluginNameChat", "") +
+								ChatColor.RED + language.get("gateNotInDatabase", ""));
 							return true;
 						}
 
-						if ((s.getNetwork() != null) && (!s.getNetwork().allowsPlayer(player.getName()))) {
-							player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-									+ language.get("permissionNotAllowed", ""));
+						if ((s.getNetwork() != null) &&
+							(!s.getNetwork().allowsPlayer(player.getName()))) {
+							player.sendMessage(
+								ChatColor.GOLD + language.get("pluginNameChat", "") +
+								ChatColor.RED +
+								language.get("permissionNotAllowed", ""));
 							return true;
 						}
 
@@ -689,59 +780,72 @@ public class MCStargates extends JavaPlugin implements Listener {
 							}
 							return true;
 						} catch (IOException e) {
-							player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-									+ language.get("gateNotDeleted", ""));
+							player.sendMessage(
+								ChatColor.GOLD + language.get("pluginNameChat", "") +
+								ChatColor.RED + language.get("gateNotDeleted", ""));
 							return true;
 						}
 					}
 
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-							+ language.get("playerHasToSelectGate", ""));
+					player.sendMessage(
+						ChatColor.GOLD + language.get("pluginNameChat", "") +
+						ChatColor.RED + language.get("playerHasToSelectGate", ""));
 					return true;
 				}
 
 				if (args[0].equalsIgnoreCase(this.commandDeactivate)) {
 					if (!player.hasPermission("stargate.command.deactivate")) {
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("permissionNotAllowed", ""));
+						player.sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + language.get("permissionNotAllowed", ""));
 						return true;
 					}
 					StargateFileReader sfr = new StargateFileReader(this);
-					String startGate = (String) this.START_GATES.get(sender.getName());
+					String startGate = (String)this.START_GATES.get(sender.getName());
 					if (startGate != null) {
 						Stargate s = sfr.getStargate(startGate);
 
-						if ((s.getActivationStatus()) && (!s.getTarget().equals("null"))) {
-							if ((s.getNetwork() != null) && (!s.getNetwork().allowsPlayer(player.getName()))) {
-								player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-										+ language.get("networkPlayerNotAllowed", ""));
+						if ((s.getActivationStatus()) &&
+							(!s.getTarget().equals("null"))) {
+							if ((s.getNetwork() != null) &&
+								(!s.getNetwork().allowsPlayer(player.getName()))) {
+								player.sendMessage(
+									ChatColor.GOLD +
+									language.get("pluginNameChat", "") + ChatColor.RED +
+									language.get("networkPlayerNotAllowed", ""));
 								return true;
 							}
 
 							ArrayList<String> args3 = new ArrayList();
 							args3.add(s.getName());
 							args3.add(s.getTarget());
-							player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN
-									+ language.get("gateConnectionClosed", args3));
+							player.sendMessage(
+								ChatColor.GOLD + language.get("pluginNameChat", "") +
+								ChatColor.GREEN +
+								language.get("gateConnectionClosed", args3));
 
 							s.stopConnection();
 							return true;
 						}
 
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("gateConnectionNotClosed", ""));
+						player.sendMessage(ChatColor.GOLD +
+										   language.get("pluginNameChat", "") +
+										   ChatColor.RED +
+										   language.get("gateConnectionNotClosed", ""));
 						return true;
 					}
 
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-							+ language.get("playerHasToSelectGate", ""));
+					player.sendMessage(
+						ChatColor.GOLD + language.get("pluginNameChat", "") +
+						ChatColor.RED + language.get("playerHasToSelectGate", ""));
 					return true;
 				}
 
 				if (args[0].equalsIgnoreCase(this.commandRepair)) {
 					if (!player.hasPermission("stargate.command.repair")) {
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("permissionNotAllowed", ""));
+						player.sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + language.get("permissionNotAllowed", ""));
 						return true;
 					}
 					if ((args.length > 1) && (args[1] != null)) {
@@ -753,43 +857,54 @@ public class MCStargates extends JavaPlugin implements Listener {
 								s.deactivateShield();
 								s.stopConnectionFromBothSides();
 								s.makeGateShape(Boolean.valueOf(true));
-								player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN
-										+ language.get("gateRepaired", ""));
+								player.sendMessage(ChatColor.GOLD +
+												   language.get("pluginNameChat", "") +
+												   ChatColor.GREEN +
+												   language.get("gateRepaired", ""));
 							}
 
 							if (!s.checkSign()) {
 								Block b = s.getLocation().getBlock();
 								b.setType(Material.WALL_SIGN);
-								Sign sign = (Sign) b.getState();
+								Sign sign = (Sign)b.getState();
 
 								if (s.getDirection().equalsIgnoreCase("NORTH")) {
-									((org.bukkit.material.Sign) sign.getData()).setFacingDirection(BlockFace.SOUTH);
+									((org.bukkit.material.Sign)sign.getData())
+										.setFacingDirection(BlockFace.SOUTH);
 								}
 								if (s.getDirection().equalsIgnoreCase("SOUTH")) {
-									((org.bukkit.material.Sign) sign.getData()).setFacingDirection(BlockFace.EAST);
+									((org.bukkit.material.Sign)sign.getData())
+										.setFacingDirection(BlockFace.EAST);
 								}
 								if (s.getDirection().equalsIgnoreCase("EAST")) {
-									((org.bukkit.material.Sign) sign.getData()).setFacingDirection(BlockFace.WEST);
+									((org.bukkit.material.Sign)sign.getData())
+										.setFacingDirection(BlockFace.WEST);
 								}
 								if (s.getDirection().equalsIgnoreCase("WEST")) {
-									((org.bukkit.material.Sign) sign.getData()).setFacingDirection(BlockFace.EAST);
+									((org.bukkit.material.Sign)sign.getData())
+										.setFacingDirection(BlockFace.EAST);
 								}
 								sign.update();
 
 								sign.setLine(0, ChatColor.GOLD + "[Stargate]");
 								sign.setLine(1, s.getName());
 								sign.update();
-								player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN
-										+ language.get("signRepaired", ""));
+								player.sendMessage(ChatColor.GOLD +
+												   language.get("pluginNameChat", "") +
+												   ChatColor.GREEN +
+												   language.get("signRepaired", ""));
 							}
 						} else {
-							player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-									+ language.get("gateNotRepairedNotInDatabase", ""));
+							player.sendMessage(
+								ChatColor.GOLD + language.get("pluginNameChat", "") +
+								ChatColor.RED +
+								language.get("gateNotRepairedNotInDatabase", ""));
 							return true;
 						}
 					} else {
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("commandMissingGatename", ""));
+						player.sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + language.get("commandMissingGatename", ""));
 						return true;
 					}
 					return true;
@@ -798,144 +913,211 @@ public class MCStargates extends JavaPlugin implements Listener {
 				Material m;
 				if (args[0].equalsIgnoreCase(this.commandActivate)) {
 					if (!player.hasPermission("stargate.command.activate")) {
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("permissionNotAllowed", ""));
+						player.sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + language.get("permissionNotAllowed", ""));
 						return true;
 					}
 					if (args[1] != null) {
 						StargateFileReader sfr = new StargateFileReader(this);
-						String startGate = (String) this.START_GATES.get(sender.getName());
+						String startGate =
+							(String)this.START_GATES.get(sender.getName());
 						if (startGate != null) {
 							Stargate s = sfr.getStargate(startGate);
 							if (s != null) {
 								if (!s.getActivationStatus()) {
 									s.setTarget(args[1]);
-									if ((s.getNetwork() != null)
-											&& (sfr.getStargate(s.getTarget()).getNetwork() != null)) {
-										if (!(s.getNetwork().name
-												.equals(sfr.getStargate(s.getTarget()).getNetwork().name))) {
-											player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-													+ ChatColor.RED + language.get("networkGatesNotInSameNetwork", ""));
+									if ((s.getNetwork() != null) &&
+										(sfr.getStargate(s.getTarget()).getNetwork() !=
+										 null)) {
+										if (!(s.getNetwork().name.equals(
+												sfr.getStargate(s.getTarget())
+													.getNetwork()
+													.name))) {
+											player.sendMessage(
+												ChatColor.GOLD +
+												language.get("pluginNameChat", "") +
+												ChatColor.RED +
+												language.get(
+													"networkGatesNotInSameNetwork",
+													""));
 											return true;
 										}
-										if (!(s.getNetwork().allowsPlayer(player.getName()))) {
-											player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-													+ ChatColor.RED + language.get("networkPlayerNotAllowed", ""));
+										if (!(s.getNetwork().allowsPlayer(
+												player.getName()))) {
+											player.sendMessage(
+												ChatColor.GOLD +
+												language.get("pluginNameChat", "") +
+												ChatColor.RED +
+												language.get("networkPlayerNotAllowed",
+															 ""));
 											return true;
 										}
 									}
 
-									if (((s.getNetwork() == null)
-											&& (sfr.getStargate(s.getTarget()).getNetwork() != null))
-											|| ((s.getNetwork() != null)
-													&& (sfr.getStargate(s.getTarget()).getNetwork() == null))) {
-										player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-												+ ChatColor.RED + language.get("networkGatesNotInSameNetwork", ""));
+									if (((s.getNetwork() == null) &&
+										 (sfr.getStargate(s.getTarget()).getNetwork() !=
+										  null)) ||
+										((s.getNetwork() != null) &&
+										 (sfr.getStargate(s.getTarget()).getNetwork() ==
+										  null))) {
+										player.sendMessage(
+											ChatColor.GOLD +
+											language.get("pluginNameChat", "") +
+											ChatColor.RED +
+											language.get("networkGatesNotInSameNetwork",
+														 ""));
 										return true;
 									}
 
-									if (!s.getLocation().getWorld()
-											.equals(sfr.getStargate(s.getTarget()).getLocation().getWorld())) {
+									if (!s.getLocation().getWorld().equals(
+											sfr.getStargate(s.getTarget())
+												.getLocation()
+												.getWorld())) {
 										int connectionPaid = 0;
-										if (!configValues.getInterWorldConnectionCosts().equals("none")) {
-											String[] costs = configValues.getInterWorldConnectionCosts().split(",");
-											m = Material.getMaterial(Integer.parseInt(costs[0]));
+										if (!configValues.getInterWorldConnectionCosts()
+												 .equals("none")) {
+											String[] costs =
+												configValues
+													.getInterWorldConnectionCosts()
+													.split(",");
+											m = Material.getMaterial(
+												Integer.parseInt(costs[0]));
 											Object inv = player.getInventory();
-											for (int i = 0; i < ((Inventory) inv).getSize(); i++) {
-												ItemStack itm = ((Inventory) inv).getItem(i);
-												if ((itm != null) && (itm.getType().equals(m))
-														&& (((Inventory) inv).getItem(i).getAmount()
-																- Integer.parseInt(costs[1]) >= 0)) {
-													player.getInventory().removeItem(new ItemStack[] {
-															new ItemStack(m, Integer.parseInt(costs[1])) });
+											for (int i = 0;
+												 i < ((Inventory)inv).getSize(); i++) {
+												ItemStack itm =
+													((Inventory)inv).getItem(i);
+												if ((itm != null) &&
+													(itm.getType().equals(m)) &&
+													(((Inventory)inv)
+															 .getItem(i)
+															 .getAmount() -
+														 Integer.parseInt(costs[1]) >=
+													 0)) {
+													player.getInventory().removeItem(
+														new ItemStack[] {new ItemStack(
+															m, Integer.parseInt(
+																   costs[1]))});
 													connectionPaid = 1;
 													break;
 												}
-
 											}
 										} else {
-											//System.out.println("no costs");
+											// System.out.println("no costs");
 											connectionPaid = 1;
 										}
 										if (connectionPaid == 0) {
-											String costName = Material
+											String costName =
+												Material
 													.getMaterial(Integer.parseInt(
-															configValues.getInterWorldConnectionCosts().split(",")[0]))
+														configValues
+															.getInterWorldConnectionCosts()
+															.split(",")[0]))
 													.toString();
-											player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-													+ ChatColor.RED + language.get("gatePaymentMissing", costName));
+											player.sendMessage(
+												ChatColor.GOLD +
+												language.get("pluginNameChat", "") +
+												ChatColor.RED +
+												language.get("gatePaymentMissing",
+															 costName));
 											return true;
 										}
 									}
 
 									if (!s.connectToTarget()) {
-										player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-												+ ChatColor.RED + language.get("gateConnectionFailed", ""));
+										player.sendMessage(
+											ChatColor.GOLD +
+											language.get("pluginNameChat", "") +
+											ChatColor.RED +
+											language.get("gateConnectionFailed", ""));
 										return true;
 									}
 
-									player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-											+ ChatColor.GREEN + language.get("gateNewConnection", s.getTarget()));
+									player.sendMessage(
+										ChatColor.GOLD +
+										language.get("pluginNameChat", "") +
+										ChatColor.GREEN +
+										language.get("gateNewConnection",
+													 s.getTarget()));
 
 									if (player.hasPermission("stargate.discover")) {
-										PlayerDataReader pdr = new PlayerDataReader(player, this);
+										PlayerDataReader pdr =
+											new PlayerDataReader(player, this);
 										if (!pdr.knowsGate(s.getTarget())) {
 											pdr.saveStargate(s.getTarget());
-											player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-													+ ChatColor.GREEN + language.get("gateNewAddress", s.getTarget()));
+											player.sendMessage(
+												ChatColor.GOLD +
+												language.get("pluginNameChat", "") +
+												ChatColor.GREEN +
+												language.get("gateNewAddress",
+															 s.getTarget()));
 										}
 									}
 									return true;
 								}
 
-								player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-										+ language.get("gateAlreadyActive", ""));
+								player.sendMessage(
+									ChatColor.GOLD +
+									language.get("pluginNameChat", "") + ChatColor.RED +
+									language.get("gateAlreadyActive", ""));
 								return true;
 							}
 
-							player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-									+ language.get("gateNotInDatabase", ""));
+							player.sendMessage(
+								ChatColor.GOLD + language.get("pluginNameChat", "") +
+								ChatColor.RED + language.get("gateNotInDatabase", ""));
 							return true;
 						}
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("playerHasToSelectGate", ""));
+						player.sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + language.get("playerHasToSelectGate", ""));
 						return true;
 					}
 
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-							+ language.get("commandWrongArguments", ""));
+					player.sendMessage(
+						ChatColor.GOLD + language.get("pluginNameChat", "") +
+						ChatColor.RED + language.get("commandWrongArguments", ""));
 					return true;
 				}
 
 				if (args[0].equalsIgnoreCase(this.commandShield)) {
 					if (!player.hasPermission("stargate.command.iris")) {
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("permissionNotAllowed", ""));
+						player.sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + language.get("permissionNotAllowed", ""));
 						return true;
 					}
-					String startGate = (String) this.START_GATES.get(sender.getName());
+					String startGate = (String)this.START_GATES.get(sender.getName());
 					if (startGate != null) {
 						StargateFileReader sfr = new StargateFileReader(this);
 						Stargate s = sfr.getStargate(startGate);
 						if (s != null) {
-							if ((s.getNetwork() != null) && (((!(s.getNetwork().allowsPlayer(player.getName())))
-									|| (s.getNetwork().isPublic())))) {
-								player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-										+ language.get("networkPlayerNotAllowed", ""));
+							if ((s.getNetwork() != null) &&
+								(((!(s.getNetwork().allowsPlayer(player.getName()))) ||
+								  (s.getNetwork().isPublic())))) {
+								player.sendMessage(
+									ChatColor.GOLD +
+									language.get("pluginNameChat", "") + ChatColor.RED +
+									language.get("networkPlayerNotAllowed", ""));
 								return true;
 							}
 
 							s.switchShield();
-							player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN
-									+ language.get("shieldStatusSwitched", ""));
+							player.sendMessage(
+								ChatColor.GOLD + language.get("pluginNameChat", "") +
+								ChatColor.GREEN +
+								language.get("shieldStatusSwitched", ""));
 							return true;
 						}
 
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("gateNotInDatabase", ""));
+						player.sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + language.get("gateNotInDatabase", ""));
 					} else {
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("playerHasToSelectGate", ""));
+						player.sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + language.get("playerHasToSelectGate", ""));
 					}
 					return true;
 				}
@@ -944,12 +1126,14 @@ public class MCStargates extends JavaPlugin implements Listener {
 
 				if (args[0].equalsIgnoreCase(this.commandGatelist)) {
 					if (!player.hasPermission("stargate.command.gatelist")) {
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("permissionNotAllowed", ""));
+						player.sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + language.get("permissionNotAllowed", ""));
 						return false;
 					}
-					player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN
-							+ language.get("chatGateList", ""));
+					player.sendMessage(
+						ChatColor.GOLD + language.get("pluginNameChat", "") +
+						ChatColor.GREEN + language.get("chatGateList", ""));
 
 					StargateFileReader sfr = new StargateFileReader(this);
 					PlayerDataReader pdr = new PlayerDataReader(player, this);
@@ -961,84 +1145,107 @@ public class MCStargates extends JavaPlugin implements Listener {
 					}
 
 					if (gateList.size() == 0) {
-						player.sendMessage(ChatColor.RED + language.get("chatNoStargatesExist", ""));
+						player.sendMessage(ChatColor.RED +
+										   language.get("chatNoStargatesExist", ""));
 						return true;
 					}
 
 					Iterator<Stargate> sm = gateList.iterator();
 					while (sm.hasNext()) {
-						s = (Stargate) sm.next();
+						s = (Stargate)sm.next();
 						Object args1 = new ArrayList();
-						((ArrayList) args1).add(s.getName());
-						((ArrayList) args1).add(s.getLocation().getBlockX());
-						((ArrayList) args1).add(s.getLocation().getBlockZ());
-						((ArrayList) args1).add(s.getLocation().getBlockY());
+						((ArrayList)args1).add(s.getName());
+						((ArrayList)args1).add(s.getLocation().getBlockX());
+						((ArrayList)args1).add(s.getLocation().getBlockZ());
+						((ArrayList)args1).add(s.getLocation().getBlockY());
 						if (s.getActivationStatus()) {
-							((ArrayList) args1).add(language.get("chatGateListActivated", ""));
+							((ArrayList)args1)
+								.add(language.get("chatGateListActivated", ""));
 						} else {
-							((ArrayList) args1).add("");
+							((ArrayList)args1).add("");
 						}
-						player.sendMessage(ChatColor.GREEN + language.get("chatGateListEntry", (ArrayList) args1));
+						player.sendMessage(
+							ChatColor.GREEN +
+							language.get("chatGateListEntry", (ArrayList)args1));
 					}
 					return true;
 				}
 
 				if (args[0].equalsIgnoreCase(this.commandNetwork)) {
 					if (!player.hasPermission("network.commands")) {
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("permissionNotAllowed", ""));
+						player.sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + language.get("permissionNotAllowed", ""));
 						return false;
 					}
-					String startGate = (String) this.START_GATES.get(sender.getName());
+					String startGate = (String)this.START_GATES.get(sender.getName());
 
 					if (startGate != null) {
 						StargateFileReader sfr = new StargateFileReader(this);
 						s = sfr.getStargate(startGate);
 						if (s != null) {
 
-							if ((args[1] != null) && (args[1].equalsIgnoreCase("info")) && (s.getNetwork() != null)) {
-								player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.GREEN
-										+ s.getNetworkName());
-								player.sendMessage(ChatColor.GREEN + s.getNetwork().state);
+							if ((args[1] != null) &&
+								(args[1].equalsIgnoreCase("info")) &&
+								(s.getNetwork() != null)) {
+								player.sendMessage(ChatColor.GOLD +
+												   language.get("pluginNameChat", "") +
+												   ChatColor.GREEN +
+												   s.getNetworkName());
+								player.sendMessage(ChatColor.GREEN +
+												   s.getNetwork().state);
 
-								player.sendMessage(ChatColor.GREEN + "Admins: " + ChatColor.DARK_PURPLE
-										+ s.getNetwork().networkadmins);
+								player.sendMessage(ChatColor.GREEN +
+												   "Admins: " + ChatColor.DARK_PURPLE +
+												   s.getNetwork().networkadmins);
 
 								if (s.getNetwork().isPrivate()) {
-									player.sendMessage(ChatColor.GREEN + "Member: " + ChatColor.YELLOW
-											+ s.getNetwork().networkmembers);
+									player.sendMessage(ChatColor.GREEN +
+													   "Member: " + ChatColor.YELLOW +
+													   s.getNetwork().networkmembers);
 								}
 
-								for (String gatename : s.getNetwork().networkstargates) {
-									PlayerDataReader pdr = new PlayerDataReader(player, this);
+								for (String gatename :
+									 s.getNetwork().networkstargates) {
+									PlayerDataReader pdr =
+										new PlayerDataReader(player, this);
 									Object knownGates = pdr.getKnownStargates();
-									if ((((ArrayList) knownGates).contains(gatename))
-											|| (s.getNetwork().hasAdmin(player.getName()))) {
+									if ((((ArrayList)knownGates).contains(gatename)) ||
+										(s.getNetwork().hasAdmin(player.getName()))) {
 										player.sendMessage(ChatColor.GREEN + gatename);
 									}
 								}
 								return true;
 							}
 
-							if ((s.getNetwork() != null) && (!s.getNetwork().hasAdmin(player.getName()))) {
-								player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-										+ language.get("networkPlayerNotAdmin", ""));
+							if ((s.getNetwork() != null) &&
+								(!s.getNetwork().hasAdmin(player.getName()))) {
+								player.sendMessage(
+									ChatColor.GOLD +
+									language.get("pluginNameChat", "") + ChatColor.RED +
+									language.get("networkPlayerNotAdmin", ""));
 								return true;
 							}
 
 							if (args[1] != null) {
-								if ((args[1].equals("remove")) && (s.getNetwork() != null)) {
+								if ((args[1].equals("remove")) &&
+									(s.getNetwork() != null)) {
 									GateNetwork net = s.getNetwork();
 									net.removeGate(s.getName());
 									net.save();
 									s.updateSign();
-									player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-											+ ChatColor.GREEN + language.get("networkRemovedGate", ""));
+									player.sendMessage(
+										ChatColor.GOLD +
+										language.get("pluginNameChat", "") +
+										ChatColor.GREEN +
+										language.get("networkRemovedGate", ""));
 									return true;
 								}
 
-								if ((args[1].equals("add")) && (args[2] != null) && (s.getNetwork() == null)) {
-									GateNetwork net = new GateNetwork(player.getName(), args[2], this);
+								if ((args[1].equals("add")) && (args[2] != null) &&
+									(s.getNetwork() == null)) {
+									GateNetwork net = new GateNetwork(player.getName(),
+																	  args[2], this);
 
 									if (net.getNetwork(args[2]) == null) {
 										net.addGate(s.getName());
@@ -1049,73 +1256,105 @@ public class MCStargates extends JavaPlugin implements Listener {
 
 									s.updateSign();
 
-									player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-											+ ChatColor.GREEN + language.get("networkAddedGate", ""));
+									player.sendMessage(
+										ChatColor.GOLD +
+										language.get("pluginNameChat", "") +
+										ChatColor.GREEN +
+										language.get("networkAddedGate", ""));
 									return true;
 								}
 
-								if ((args[1].equals("public")) && (s.getNetwork() != null)) {
+								if ((args[1].equals("public")) &&
+									(s.getNetwork() != null)) {
 									GateNetwork net = s.getNetwork();
 									net.makePublic();
 									net.save();
-									player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-											+ ChatColor.GREEN + language.get("networkSetPublic", net.name));
+									player.sendMessage(
+										ChatColor.GOLD +
+										language.get("pluginNameChat", "") +
+										ChatColor.GREEN +
+										language.get("networkSetPublic", net.name));
 									return true;
 								}
 
-								if ((args[1].equals("private")) && (s.getNetwork() != null)) {
+								if ((args[1].equals("private")) &&
+									(s.getNetwork() != null)) {
 									GateNetwork net = s.getNetwork();
 									net.makePrivate();
 									net.save();
-									player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-											+ ChatColor.GREEN + language.get("networkSetPrivate", net.name));
+									player.sendMessage(
+										ChatColor.GOLD +
+										language.get("pluginNameChat", "") +
+										ChatColor.GREEN +
+										language.get("networkSetPrivate", net.name));
 									return true;
 								}
 
-								if ((args[1].equals("op")) && (args[2] != null) && (s.getNetwork() != null)) {
+								if ((args[1].equals("op")) && (args[2] != null) &&
+									(s.getNetwork() != null)) {
 									GateNetwork net = s.getNetwork();
 									net.addAdmin(args[2]);
 									net.save();
-									player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-											+ ChatColor.GREEN + language.get("networkOpedPlayer", args[2]));
+									player.sendMessage(
+										ChatColor.GOLD +
+										language.get("pluginNameChat", "") +
+										ChatColor.GREEN +
+										language.get("networkOpedPlayer", args[2]));
 									return true;
 								}
 
-								if ((args[1].equals("deop")) && (args[2] != null) && (s.getNetwork() != null)) {
+								if ((args[1].equals("deop")) && (args[2] != null) &&
+									(s.getNetwork() != null)) {
 									GateNetwork net = s.getNetwork();
 									net.removeAdmin(args[2]);
 									net.addMember(args[2]);
 									net.save();
-									player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-											+ ChatColor.GREEN + language.get("networkDeopedPlayer", args[2]));
+									player.sendMessage(
+										ChatColor.GOLD +
+										language.get("pluginNameChat", "") +
+										ChatColor.GREEN +
+										language.get("networkDeopedPlayer", args[2]));
 									return true;
 								}
 
-								if ((args[1].equals("allow")) && (args[2] != null) && (s.getNetwork() != null)) {
+								if ((args[1].equals("allow")) && (args[2] != null) &&
+									(s.getNetwork() != null)) {
 									GateNetwork net = s.getNetwork();
 									net.addMember(args[2]);
 									net.save();
-									player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-											+ ChatColor.GREEN + language.get("networkAllowPlayer", args[2]));
+									player.sendMessage(
+										ChatColor.GOLD +
+										language.get("pluginNameChat", "") +
+										ChatColor.GREEN +
+										language.get("networkAllowPlayer", args[2]));
 									return true;
 								}
 
-								if ((args[1].equals("unallow")) && (args[2] != null) && (s.getNetwork() != null)) {
+								if ((args[1].equals("unallow")) && (args[2] != null) &&
+									(s.getNetwork() != null)) {
 									GateNetwork net = s.getNetwork();
 									net.removeMember(args[2]);
 									net.save();
-									player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-											+ ChatColor.GREEN + language.get("networkUnallowedPlayer", args[2]));
+									player.sendMessage(
+										ChatColor.GOLD +
+										language.get("pluginNameChat", "") +
+										ChatColor.GREEN +
+										language.get("networkUnallowedPlayer",
+													 args[2]));
 									return true;
 								}
 
-								if ((args[1].equalsIgnoreCase("setName")) && (args[2] != null) && (!args[2].equals(""))
-										&& (s.getNetwork() != null)) {
+								if ((args[1].equalsIgnoreCase("setName")) &&
+									(args[2] != null) && (!args[2].equals("")) &&
+									(s.getNetwork() != null)) {
 									GateNetwork net = s.getNetwork();
 									net.setName(args[2]);
 									net.save();
-									player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "")
-											+ ChatColor.GREEN + language.get("networkSetName", args[2]));
+									player.sendMessage(
+										ChatColor.GOLD +
+										language.get("pluginNameChat", "") +
+										ChatColor.GREEN +
+										language.get("networkSetName", args[2]));
 									return true;
 								}
 							}
@@ -1123,25 +1362,27 @@ public class MCStargates extends JavaPlugin implements Listener {
 							return true;
 						}
 
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("gateNotInDatabase", ""));
+						player.sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + language.get("gateNotInDatabase", ""));
 					} else {
-						player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-								+ language.get("playerHasToSelectGate", ""));
+						player.sendMessage(
+							ChatColor.GOLD + language.get("pluginNameChat", "") +
+							ChatColor.RED + language.get("playerHasToSelectGate", ""));
 					}
 					return true;
 				}
 
 			} else {
 
-				player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") + ChatColor.RED
-						+ language.get("commandWrongArguments", ""));
+				player.sendMessage(ChatColor.GOLD + language.get("pluginNameChat", "") +
+								   ChatColor.RED +
+								   language.get("commandWrongArguments", ""));
 				return true;
 			}
 		}
 
 		return true;
-
 	}
 
 	public void checkConficFiles() {
@@ -1164,9 +1405,10 @@ public class MCStargates extends JavaPlugin implements Listener {
 
 		if (!stargateList.exists()) {
 			try {
-				PrintWriter writer = new PrintWriter("plugins/MC-Stargates/stargateList.txt", "UTF-8");
+				PrintWriter writer =
+					new PrintWriter("plugins/MC-Stargates/stargateList.txt", "UTF-8");
 				writer.println(
-						"# Saves all the Stargates: Name, worldID, irisStatus, activationStatus, location, target, direction");
+					"# Saves all the Stargates: Name, worldID, irisStatus, activationStatus, location, target, direction");
 				writer.close();
 			} catch (Exception e) {
 				System.out.println("[WARNING] Couldn't create stargateList.txt!");
@@ -1175,7 +1417,8 @@ public class MCStargates extends JavaPlugin implements Listener {
 
 		if (!NetworkList.exists()) {
 			try {
-				PrintWriter writer = new PrintWriter("plugins/MC-Stargates/networkList.txt", "UTF-8");
+				PrintWriter writer =
+					new PrintWriter("plugins/MC-Stargates/networkList.txt", "UTF-8");
 				writer.println("# Saves all the Networks of a world");
 				writer.close();
 			} catch (Exception e) {
@@ -1185,29 +1428,34 @@ public class MCStargates extends JavaPlugin implements Listener {
 
 		if (!mcgatesConfig.exists()) {
 			try {
-				PrintWriter writer = new PrintWriter("plugins/MC-Stargates/mcgatesConfig.txt", "UTF-8");
+				PrintWriter writer =
+					new PrintWriter("plugins/MC-Stargates/mcgatesConfig.txt", "UTF-8");
 				writer.println("# Config File - Everything else is coming soon ;-)");
 				writer.println(
-						"# For materialsettings, just use solid blocks and the official names for the materials");
+					"# For materialsettings, just use solid blocks and the official names for the materials");
 				writer.println(
-						"# Deleting this file and restarting the plugin will give you a version with default-values.");
+					"# Deleting this file and restarting the plugin will give you a version with default-values.");
 				writer.println(
-						"# ATTENTION!! Changes could cause the plugin to have troubles finding already made stargates.");
-				writer.println("activationTime: 38 # seconds gate stays open (0 = infinite)");
+					"# ATTENTION!! Changes could cause the plugin to have troubles finding already made stargates.");
+				writer.println(
+					"activationTime: 38 # seconds gate stays open (0 = infinite)");
 				writer.println("DHDMaterial: OBSIDIAN");
 				writer.println("GateMaterial: OBSIDIAN");
 				writer.println("ChevronMaterial: REDSTONE_BLOCK");
 				writer.println("IrisMaterial: IRON_BLOCK");
 				writer.println(
-						"DHDDistance: 9 #Distance of the !sign! (not the DHD-block) to the gate, the DHD-block is one less.");
+					"DHDDistance: 9 #Distance of the !sign! (not the DHD-block) to the gate, the DHD-block is one less.");
 				writer.println("KawooshSound: ENTITY_ENDERDRAGON_GROWL");
 				writer.println("KawooshSoundRadius: 20");
 				writer.println("KawooshSoundVolume: 10");
-				writer.println("IrisDamage: 18 #in hitpoints. One heart equals 2 hitpoints");
-				writer.println("IrisDestroyInventory: 1 # 0 false, 1 true, if player dies, inventory goes with him");
-				writer.println("IrisNoTeleport: false #if targets iris is activated, teleport back to starting-gate");
 				writer.println(
-						"Language: en #country-code, e.g. klingon if your languagepack is named language_klingon.txt");
+					"IrisDamage: 18 #in hitpoints. One heart equals 2 hitpoints");
+				writer.println(
+					"IrisDestroyInventory: 1 # 0 false, 1 true, if player dies, inventory goes with him");
+				writer.println(
+					"IrisNoTeleport: false #if targets iris is activated, teleport back to starting-gate");
+				writer.println(
+					"Language: en #country-code, e.g. klingon if your languagepack is named language_klingon.txt");
 				writer.println("RingMaterial: STEP");
 				writer.println("RingGroundMaterial: DOUBLE_STEP");
 				writer.println("RingDistance: 0 #Offset Sign to Ringtransporter");
@@ -1232,75 +1480,102 @@ public class MCStargates extends JavaPlugin implements Listener {
 
 		if (!stargateLanguageFile.exists()) {
 			try {
-				PrintWriter writer = new PrintWriter("plugins/MC-Stargates/language_en.txt", "UTF-8");
+				PrintWriter writer =
+					new PrintWriter("plugins/MC-Stargates/language_en.txt", "UTF-8");
 				writer.println("# Language File English");
-				writer.println("# You can change everything behind the \":\". The number of %s should not be changed!");
 				writer.println(
-						"# Deleting this file and restarting the plugin will give you a version with default-values.");
+					"# You can change everything behind the \":\". The number of %s should not be changed!");
 				writer.println(
-						"# ATTENTION!! Dont change the Values in front of the \":\". This will result in Error-Messages.");
+					"# Deleting this file and restarting the plugin will give you a version with default-values.");
+				writer.println(
+					"# ATTENTION!! Dont change the Values in front of the \":\". This will result in Error-Messages.");
 				writer.println("chatGateListActivated: \", ACTIVATED\"");
 				writer.println(
-						"chatGateListEntry: \"%s (%s, %s, %s) %s\"\t#Arguments: Name, positions(x,z,y), if activated: chatGateListActivated");
+					"chatGateListEntry: \"%s (%s, %s, %s) %s\"\t#Arguments: Name, positions(x,z,y), if activated: chatGateListActivated");
 				writer.println("chatGateList: \"Gatelist\"");
 				writer.println("chatNoStargatesExist: \"No existing Stargates!\"");
-				writer.println("commandWrongArguments: \"Wrong number or type of arguments!\"");
-				writer.println("commandMissingGatename: \"Last Argument <Gatename> missed!\"");
-				writer.println("gateAlreadyActive: \"Stargate was already activated!\"");
+				writer.println(
+					"commandWrongArguments: \"Wrong number or type of arguments!\"");
+				writer.println(
+					"commandMissingGatename: \"Last Argument <Gatename> missed!\"");
+				writer.println(
+					"gateAlreadyActive: \"Stargate was already activated!\"");
 				writer.println("gateBuild: \"You build a stargate-shape.\"");
 				writer.println(
-						"gateConnectionClosed: \"You closed the connection %s -> %s.\"\t#Arguments: Startgate, Targetgate");
+					"gateConnectionClosed: \"You closed the connection %s -> %s.\"\t#Arguments: Startgate, Targetgate");
 				writer.println(
-						"gateConnectionClosedTimeout: \"The connection %s -> %s closed automatically. Maybe it timed out.\"\t#Arguments: Startgate, Targetgate");
+					"gateConnectionClosedTimeout: \"The connection %s -> %s closed automatically. Maybe it timed out.\"\t#Arguments: Startgate, Targetgate");
 				writer.println("gateConnectionFailed: \"Stargate-connection failed!\"");
-				writer.println("gateConnectionNotClosed: \"Didn't closed connection.\"");
-				writer.println("gateCreated: \"Stargate %s was created!\"\t\t\t#Arguments: The Stargates name");
+				writer.println(
+					"gateConnectionNotClosed: \"Didn't closed connection.\"");
+				writer.println(
+					"gateCreated: \"Stargate %s was created!\"\t\t\t#Arguments: The Stargates name");
 				writer.println("gateCreationFailed: \"Couldn't create Stargate!\"");
 				writer.println(
-						"gateDestroyed: \"%s was destoryed. You should repair it!\"\t\t#Arguments: The Stargates name");
-				writer.println("gateNameExists: \"Stargate wasnt created. Name already exists!\"");
-				writer.println("gateNewAddress: \"You found the unknown Stargate-address %s.\"");
+					"gateDestroyed: \"%s was destoryed. You should repair it!\"\t\t#Arguments: The Stargates name");
+				writer.println(
+					"gateNameExists: \"Stargate wasnt created. Name already exists!\"");
+				writer.println(
+					"gateNewAddress: \"You found the unknown Stargate-address %s.\"");
 				writer.println("gateNewConnection: \"Connected Stargate to %s.\"");
 				writer.println("gateNotArround: \"Couldn't find a Stargate nearby!\"");
-				writer.println("gateNotInDatabase: \"An Error occured. Stargate wasn't found in the database!\"");
-				writer.println("gateNotDeleted: \"An Error occured. Stargate wasn't deleted!\"");
-				writer.println("gateNotRepairedNotInDatabase: \"Stargate couldn't be repaired. Name not found!\"");
 				writer.println(
-						"gatePaymentMissing: \"To activate a connection to an other world, you have to activate an aditional Chevron. For this, you need %s.\"\t#Arguments: A Materials name");
+					"gateNotInDatabase: \"An Error occured. Stargate wasn't found in the database!\"");
+				writer.println(
+					"gateNotDeleted: \"An Error occured. Stargate wasn't deleted!\"");
+				writer.println(
+					"gateNotRepairedNotInDatabase: \"Stargate couldn't be repaired. Name not found!\"");
+				writer.println(
+					"gatePaymentMissing: \"To activate a connection to an other world, you have to activate an aditional Chevron. For this, you need %s.\"\t#Arguments: A Materials name");
 				writer.println("gateRepaired: \"Stargate was repaired!\"");
-				writer.println("gateSelected: \"%s selected.\"\t\t\t\t#Arguments: The Stargates name");
 				writer.println(
-						"gateSelectedHasTarget: \"%s (-> %s) selected.\"\t\t\t#Arguments: The Stargates name and the name of the targetgate");
-				writer.println("networkAddedGate: \"You added this Gate to the network %s.\"");
-				writer.println("networkAllowPlayer: \"You allowed %s to use this network now.\"");
-				writer.println("networkDeopPlayer: \"You made %s a normal user, not an opperator.\"");
+					"gateSelected: \"%s selected.\"\t\t\t\t#Arguments: The Stargates name");
 				writer.println(
-						"networkNoPermissionCreate: \"You don't have permission to create new networks. Gate was created without network.\"");
-				writer.println("networkOpPlayer: \"You made %s an opperator of this network.\"");
+					"gateSelectedHasTarget: \"%s (-> %s) selected.\"\t\t\t#Arguments: The Stargates name and the name of the targetgate");
 				writer.println(
-						"networkPlayerNotAllowed: \"You aren't a member or admin, so you aren't allowed to use this network.\"");
-				writer.println("networkPlayerNotAdmin: \"You aren't a admin of this network.\"");
-				writer.println("networkRemovedGate: \"You deleted this Gate from the network %s.\"");
-				writer.println("networkSetName: \"You changed this networks name to %s.\"");
+					"networkAddedGate: \"You added this Gate to the network %s.\"");
 				writer.println(
-						"networkSetPrivate: \"You made the network %s a private one. Use the allow-command to allow players to use it.\"");
-				writer.println("networkSetPublic: \"You made the network %s a public one. Everyone can use it now.\"");
-				writer.println("networkUnallowPlayer: \"You took the permission from %s to use this Gates network.\"");
+					"networkAllowPlayer: \"You allowed %s to use this network now.\"");
 				writer.println(
-						"networkGatesNotInSameNetwork: \"Both gates have to be inside the same network or both without a network.\"");
-				writer.println("permissionNotAllowed: \"You dont have permission to do this.\"");
+					"networkDeopPlayer: \"You made %s a normal user, not an opperator.\"");
+				writer.println(
+					"networkNoPermissionCreate: \"You don't have permission to create new networks. Gate was created without network.\"");
+				writer.println(
+					"networkOpPlayer: \"You made %s an opperator of this network.\"");
+				writer.println(
+					"networkPlayerNotAllowed: \"You aren't a member or admin, so you aren't allowed to use this network.\"");
+				writer.println(
+					"networkPlayerNotAdmin: \"You aren't a admin of this network.\"");
+				writer.println(
+					"networkRemovedGate: \"You deleted this Gate from the network %s.\"");
+				writer.println(
+					"networkSetName: \"You changed this networks name to %s.\"");
+				writer.println(
+					"networkSetPrivate: \"You made the network %s a private one. Use the allow-command to allow players to use it.\"");
+				writer.println(
+					"networkSetPublic: \"You made the network %s a public one. Everyone can use it now.\"");
+				writer.println(
+					"networkUnallowPlayer: \"You took the permission from %s to use this Gates network.\"");
+				writer.println(
+					"networkGatesNotInSameNetwork: \"Both gates have to be inside the same network or both without a network.\"");
+				writer.println(
+					"permissionNotAllowed: \"You dont have permission to do this.\"");
 				writer.println("pluginNameChat: \"[Stargate] \"");
-				writer.println("playerHasToSelectGate: \"You need to select a Stargate!\"");
 				writer.println(
-						"playerKilledByKawoosh: \"You were dematerialized by the KAWOOOOOSH! Don't stay so close next time.\"");
+					"playerHasToSelectGate: \"You need to select a Stargate!\"");
 				writer.println(
-						"playerDamagedByIris: \"You got a bitchslap from Iris straight in your face. Next time, try to walk through the gate backwards.\"");
-				writer.println("ringsConstructionDamaged: \"The Rings or the target rings seem to be damaged\"");
-				writer.println("ringsNoTarget: \"There seems to be no rings around, that could work as receiver.\"");
-				writer.println("shieldStatusSwitched: \"Iris was activated/deactivated.\"");
+					"playerKilledByKawoosh: \"You were dematerialized by the KAWOOOOOSH! Don't stay so close next time.\"");
+				writer.println(
+					"playerDamagedByIris: \"You got a bitchslap from Iris straight in your face. Next time, try to walk through the gate backwards.\"");
+				writer.println(
+					"ringsConstructionDamaged: \"The Rings or the target rings seem to be damaged\"");
+				writer.println(
+					"ringsNoTarget: \"There seems to be no rings around, that could work as receiver.\"");
+				writer.println(
+					"shieldStatusSwitched: \"Iris was activated/deactivated.\"");
 				writer.println("signRepaired: \"Sign was repaired!\"");
 				writer.println(
-						"wrongCommand: \"Wrong command or invalid quantity of arguments. Try %s help\"\t\t\t\t#Arguments: the commands prefix");
+					"wrongCommand: \"Wrong command or invalid quantity of arguments. Try %s help\"\t\t\t\t#Arguments: the commands prefix");
 
 				writer.close();
 			} catch (Exception e) {
@@ -1325,7 +1600,8 @@ public class MCStargates extends JavaPlugin implements Listener {
 
 		for (Stargate s : stargateList) {
 			Vector direction = s.getNormalVector();
-			Vector start = s.getPosition().add(direction.clone().multiply(s.DHD_DISTANCE));
+			Vector start =
+				s.getPosition().add(direction.clone().multiply(s.DHD_DISTANCE));
 
 			double x1 = start.getX();
 			double x2 = start.getX();
@@ -1373,9 +1649,12 @@ public class MCStargates extends JavaPlugin implements Listener {
 				z1 -= z2;
 			}
 
-			if ((y1 <= entity.getLocation().getZ()) && (entity.getLocation().getZ() <= y2)
-					&& (x1 <= entity.getLocation().getX()) && (entity.getLocation().getX() <= x2)
-					&& (z1 <= entity.getLocation().getY()) && (entity.getLocation().getY() <= z2)) {
+			if ((y1 <= entity.getLocation().getZ()) &&
+				(entity.getLocation().getZ() <= y2) &&
+				(x1 <= entity.getLocation().getX()) &&
+				(entity.getLocation().getX() <= x2) &&
+				(z1 <= entity.getLocation().getY()) &&
+				(entity.getLocation().getY() <= z2)) {
 				return s;
 			}
 		}

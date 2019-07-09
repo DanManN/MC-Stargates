@@ -1,8 +1,8 @@
 package com.DanMan.MCStargates.stargate;
 
+import com.DanMan.MCStargates.main.MCStargates;
 import java.util.ArrayList;
 import java.util.Iterator;
-
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,14 +10,12 @@ import org.bukkit.World;
 import org.bukkit.block.Block;
 import org.bukkit.util.Vector;
 
-import com.DanMan.MCStargates.main.MCStargates;
-
 public class Kawoosh {
 	private Stargate stargate;
 	private int id = 0;
 	private int state_counter = 0;
 	private MCStargates plugin;
-	
+
 	public Kawoosh(Stargate s, MCStargates plugin) {
 		this.stargate = s;
 		this.plugin = plugin;
@@ -26,66 +24,69 @@ public class Kawoosh {
 	public void makeKawoosh() {
 		if (plugin != null) {
 
-			this.id = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(plugin, new Runnable() {
-				public void run() {
-					Vector normal = Kawoosh.this.stargate.getNormalVector();
-					Vector h = new Vector(0, 0, 1);
-					Vector side = normal.clone().crossProduct(h);
-					Vector start = Kawoosh.this.stargate.getPosition()
-							.add(normal.clone().multiply(stargate.DHD_DISTANCE));
+			this.id = Bukkit.getServer().getScheduler().scheduleSyncRepeatingTask(
+				plugin, new Runnable() {
+					public void run() {
+						Vector normal = Kawoosh.this.stargate.getNormalVector();
+						Vector h = new Vector(0, 0, 1);
+						Vector side = normal.clone().crossProduct(h);
+						Vector start = Kawoosh.this.stargate.getPosition().add(
+							normal.clone().multiply(stargate.DHD_DISTANCE));
 
-					Kawoosh.this.state_counter += 1;
+						Kawoosh.this.state_counter += 1;
 
-					ArrayList<Vector> kawooshCoords = new ArrayList<Vector>();
-					if (Kawoosh.this.state_counter == 1)
-						kawooshCoords = Kawoosh.this.state1();
-					if (Kawoosh.this.state_counter == 2)
-						kawooshCoords = Kawoosh.this.state2();
-					if (Kawoosh.this.state_counter == 3)
-						kawooshCoords = Kawoosh.this.state3();
-					if (Kawoosh.this.state_counter == 4)
-						kawooshCoords = Kawoosh.this.state4();
-					if (Kawoosh.this.state_counter == 5)
-						kawooshCoords = Kawoosh.this.state5();
-					if (Kawoosh.this.state_counter == 6)
-						kawooshCoords = Kawoosh.this.state6();
-					if (Kawoosh.this.state_counter == 7)
-						kawooshCoords = Kawoosh.this.state7();
-					if (Kawoosh.this.state_counter == 8)
-						kawooshCoords = Kawoosh.this.state8();
-					if (Kawoosh.this.state_counter == 9)
-						kawooshCoords = Kawoosh.this.state9();
-					if (Kawoosh.this.state_counter == 10)
-						kawooshCoords = Kawoosh.this.state10();
-					if (Kawoosh.this.state_counter == 11)
-						kawooshCoords = Kawoosh.this.state4();
-					if (Kawoosh.this.state_counter == 12)
-						kawooshCoords = Kawoosh.this.state3();
-					if (Kawoosh.this.state_counter > 12) {
-						Bukkit.getScheduler().cancelTask(Kawoosh.this.id);
+						ArrayList<Vector> kawooshCoords = new ArrayList<Vector>();
+						if (Kawoosh.this.state_counter == 1)
+							kawooshCoords = Kawoosh.this.state1();
+						if (Kawoosh.this.state_counter == 2)
+							kawooshCoords = Kawoosh.this.state2();
+						if (Kawoosh.this.state_counter == 3)
+							kawooshCoords = Kawoosh.this.state3();
+						if (Kawoosh.this.state_counter == 4)
+							kawooshCoords = Kawoosh.this.state4();
+						if (Kawoosh.this.state_counter == 5)
+							kawooshCoords = Kawoosh.this.state5();
+						if (Kawoosh.this.state_counter == 6)
+							kawooshCoords = Kawoosh.this.state6();
+						if (Kawoosh.this.state_counter == 7)
+							kawooshCoords = Kawoosh.this.state7();
+						if (Kawoosh.this.state_counter == 8)
+							kawooshCoords = Kawoosh.this.state8();
+						if (Kawoosh.this.state_counter == 9)
+							kawooshCoords = Kawoosh.this.state9();
+						if (Kawoosh.this.state_counter == 10)
+							kawooshCoords = Kawoosh.this.state10();
+						if (Kawoosh.this.state_counter == 11)
+							kawooshCoords = Kawoosh.this.state4();
+						if (Kawoosh.this.state_counter == 12)
+							kawooshCoords = Kawoosh.this.state3();
+						if (Kawoosh.this.state_counter > 12) {
+							Bukkit.getScheduler().cancelTask(Kawoosh.this.id);
+						}
+
+						Kawoosh.this.cleanKawoosh();
+
+						for (Vector v : kawooshCoords) {
+
+							Vector k = start.clone()
+										   .add(side.clone().multiply(v.getX()))
+										   .add(h.clone().multiply(v.getY()))
+										   .subtract(normal.clone().multiply(v.getZ()));
+							Location location =
+								new Location((org.bukkit.World)Bukkit.getWorlds().get(
+												 Kawoosh.this.stargate.getWorldID()),
+											 k.getX(), k.getZ(), k.getY());
+							Block block = location.getBlock();
+
+							block.setType(Material.STATIONARY_WATER);
+
+							block.setMetadata(
+								"PortalWater",
+								new org.bukkit.metadata.FixedMetadataValue(plugin,
+																		   "true"));
+						}
 					}
-
-					Kawoosh.this.cleanKawoosh();
-
-					for (Vector v : kawooshCoords) {
-
-						Vector k = start.clone().add(side.clone().multiply(v.getX())).add(h.clone().multiply(v.getY()))
-								.subtract(normal.clone().multiply(v.getZ()));
-						Location location = new Location(
-								(org.bukkit.World) Bukkit.getWorlds().get(Kawoosh.this.stargate.getWorldID()), k.getX(),
-								k.getZ(), k.getY());
-						Block block = location.getBlock();
-
-						block.setType(Material.STATIONARY_WATER);
-
-						block.setMetadata("PortalWater",
-								new org.bukkit.metadata.FixedMetadataValue(plugin, "true"));
-
-					}
-
-				}
-
-			}, 0L, 3L);
+				}, 0L, 3L);
 		} else {
 			System.out.println("null plugin?");
 		}
@@ -278,27 +279,29 @@ public class Kawoosh {
 	}
 
 	public void cleanKawoosh() {
-     		Vector normal = this.stargate.getNormalVector();
-    		ArrayList<Vector> vecs = this.stargate.getInsideCoordinates();
-    		for (int i = 1; i < 8; i++)  {
-       			Vector k = normal.clone().multiply(-i);
-			//System.out.println(k.toString());
+		Vector normal = this.stargate.getNormalVector();
+		ArrayList<Vector> vecs = this.stargate.getInsideCoordinates();
+		for (int i = 1; i < 8; i++) {
+			Vector k = normal.clone().multiply(-i);
+			// System.out.println(k.toString());
 			for (Vector iv : vecs) {
 				Vector v = iv.clone().add(k);
-				//System.out.println(v.toString());
-       				Location location = new Location((World) Bukkit.getWorlds().get(this.stargate.getWorldID()), v.getX(), v.getZ(), v.getY());
-       				Block block = location.getBlock();
-       
-       				if (!block.hasMetadata("StargateBlock")) {
-         				block.setType(Material.AIR);
-         				if (block.hasMetadata("PortalWater")) {
-           					block.removeMetadata("PortalWater", plugin);
-         				}
-         				if (block.hasMetadata("Kawoosh")) {
-           					block.removeMetadata("Kawoosh", plugin);
-         				}
-       				}
+				// System.out.println(v.toString());
+				Location location = new Location(
+					(World)Bukkit.getWorlds().get(this.stargate.getWorldID()), v.getX(),
+					v.getZ(), v.getY());
+				Block block = location.getBlock();
+
+				if (!block.hasMetadata("StargateBlock")) {
+					block.setType(Material.AIR);
+					if (block.hasMetadata("PortalWater")) {
+						block.removeMetadata("PortalWater", plugin);
+					}
+					if (block.hasMetadata("Kawoosh")) {
+						block.removeMetadata("Kawoosh", plugin);
+					}
+				}
 			}
-     		}
-   	}
+		}
+	}
 }

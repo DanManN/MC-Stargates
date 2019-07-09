@@ -1,5 +1,6 @@
 package com.DanMan.MCStargates.utils;
 
+import com.DanMan.MCStargates.main.MCStargates;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
@@ -7,16 +8,13 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
-
 import org.bukkit.entity.Player;
-
-import com.DanMan.MCStargates.main.MCStargates;
 
 public class PlayerDataReader {
 	Player player;
 	String filepath;
 	MCStargates plugin;
-	
+
 	public PlayerDataReader(Player p, MCStargates plugin) {
 		this.player = p;
 		this.filepath = ("plugins/MC-Stargates/players/" + p.getName() + ".txt");
@@ -37,7 +35,8 @@ public class PlayerDataReader {
 					writer.println("# Saves all the Stargates a player discovered");
 					writer.close();
 				} catch (Exception e) {
-					System.err.println("[WARNING] Couldn't create " + this.player.getName() + ".txt!");
+					System.err.println("[WARNING] Couldn't create " +
+									   this.player.getName() + ".txt!");
 				}
 			}
 		}
@@ -63,7 +62,7 @@ public class PlayerDataReader {
 					ret.add(a);
 				}
 			}
-			for (String s : (ArrayList<String>) ret.clone()) {
+			for (String s : (ArrayList<String>)ret.clone()) {
 				StargateFileReader sfr = new StargateFileReader(plugin);
 				if (sfr.getStargate(s) == null) {
 					ret.remove(s);
@@ -96,7 +95,8 @@ public class PlayerDataReader {
 
 		PrintWriter pWriter = null;
 		try {
-			pWriter = new PrintWriter(new java.io.BufferedWriter(new FileWriter(this.filepath, true)), true);
+			pWriter = new PrintWriter(
+				new java.io.BufferedWriter(new FileWriter(this.filepath, true)), true);
 
 			pWriter.println(name);
 			return true;
